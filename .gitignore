@@ -1,0 +1,13 @@
+# global
+node_modules
+.env
+
+# frontend
+frontend/dist
+
+# backend
+backend/vendor
+backend/public/build
+backend/public/storage
+backend/storage/app/private/*
+backend/storage/app/public/*
