@@ -12,6 +12,8 @@ import PermissionsTab from './01_pages/private/admin/users/_tabs/rbac/_tabs/perm
 import RolesTab from './01_pages/private/admin/users/_tabs/rbac/_tabs/roles/roles-tab';
 import RbacTab from './01_pages/private/admin/users/_tabs/rbac/rbac-tab';
 import UsersPage from './01_pages/private/admin/users/users-page';
+import CustomerHomePage from './01_pages/private/customer/home/customer-home-page';
+import CustomerServicesPage from './01_pages/private/customer/services/customer-services-page';
 import DataTableGridPage from './01_pages/private/examples/data-table/data-table-grid-page';
 import DataTableListGridPage from './01_pages/private/examples/data-table/data-table-list-grid-page';
 import DataTableListPage from './01_pages/private/examples/data-table/data-table-list-page';
@@ -46,7 +48,11 @@ const App = () => {
       children: [
         {
           path: '',
-          element: <h1>Customer Page</h1>,
+          element: <CustomerHomePage />,
+        },
+        {
+          path: 'services',
+          element: <CustomerServicesPage />,
         },
       ],
     },
