@@ -68,11 +68,7 @@ const LoginPage = () => {
     <div className="relative container grid h-screen flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0">
       <div className="bg-primary relative hidden h-full flex-col items-center justify-center p-10 text-white lg:flex dark:border-r">
         <div className="flex max-w-[350px] flex-col items-center gap-4">
-          <img
-            className="max-w-[200px]"
-            src="/images/app-logo.jpg"
-            alt="logo"
-          />
+          <img className="max-w-[200px]" src="/logos/logo.png" alt="logo" />
         </div>
       </div>
 

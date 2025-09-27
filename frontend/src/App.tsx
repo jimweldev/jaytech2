@@ -28,8 +28,8 @@ import PasswordPage from './01_pages/private/settings/password-page';
 import ProfilePage from './01_pages/private/settings/profile/profile-page';
 import LoginPage from './01_pages/public/login-page';
 import AdminLayout from './02_layouts/private/admin-layout';
+import CustomerLayout from './02_layouts/private/customer-layout';
 import ExamplesLayout from './02_layouts/private/examples-layout';
-import GuestLayout from './02_layouts/private/guest-layout';
 import HomeLayout from './02_layouts/private/home-layout';
 import PrivateLayout from './02_layouts/private/private-layout';
 import SettingsLayout from './02_layouts/private/settings-layout';
@@ -38,6 +38,19 @@ import useAuthUserStore from './05_stores/_common/auth-user-store';
 
 const App = () => {
   const { token, user } = useAuthUserStore();
+
+  const customerRoutes = [
+    // CUSTOMER LAYOUT
+    {
+      element: <CustomerLayout />,
+      children: [
+        {
+          path: '',
+          element: <h1>Customer Page</h1>,
+        },
+      ],
+    },
+  ];
 
   const privateRoutes = [
     {
@@ -226,21 +239,8 @@ const App = () => {
             ]
           : []),
 
-        // ACCOUNT TYPE | GUEST
-        ...(user?.account_type === 'Guest'
-          ? [
-              // GUEST LAYOUT
-              {
-                element: <GuestLayout />,
-                children: [
-                  {
-                    path: '',
-                    element: <HomePage />,
-                  },
-                ],
-              },
-            ]
-          : []),
+        // ACCOUNT TYPE | CUSTOMER
+        ...(user?.account_type === 'Customer' ? customerRoutes : []),
       ],
     },
     {
