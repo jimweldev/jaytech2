@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Service;
 
 use App\Helpers\QueryHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Service\Service;
+use App\Models\Service\ServiceProduct;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
-class ServiceController extends Controller {
+class ServiceProductController extends Controller {
     /**
      * Display a paginated list of records with optional filtering and search.
      */
@@ -16,7 +17,7 @@ class ServiceController extends Controller {
 
         try {
             // Initialize the query builder
-            $query = Service::query();
+            $query = ServiceProduct::with('service:id,label');
 
             // Define the default query type
             $type = 'paginate';
@@ -67,7 +68,7 @@ class ServiceController extends Controller {
      */
     public function show($id) {
         // Find the record by ID
-        $record = Service::where('id', $id)
+        $record = ServiceProduct::where('id', $id)
             ->first();
 
         if (!$record) {
@@ -84,10 +85,19 @@ class ServiceController extends Controller {
     /**
      * Store a newly created record in storage.
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         try {
-            // create a new record
-            $record = Service::create($request->all());
+            // Prepare the data
+            $data = $request->all();
+
+            // Automatically slugify the label
+            if (!empty($data['label'])) {
+                $data['slug'] = Str::slug($data['label']);
+            }
+
+            // Create a new record
+            $record = ServiceProduct::create($data);
 
             // Return the created record
             return response()->json($record, 201);
@@ -103,10 +113,11 @@ class ServiceController extends Controller {
     /**
      * Update the specified record in storage.
      */
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         try {
             // Find the record by ID
-            $record = Service::find($id);
+            $record = ServiceProduct::find($id);
 
             if (!$record) {
                 // Return a 404 response if the record is not found
@@ -115,8 +126,16 @@ class ServiceController extends Controller {
                 ], 404);
             }
 
+            // Prepare the data for update
+            $data = $request->all();
+
+            // Automatically slugify the label if present in the update request
+            if (!empty($data['label'])) {
+                $data['slug'] = Str::slug($data['label']);
+            }
+
             // Update the record
-            $record->update($request->all());
+            $record->update($data);
 
             // Return the updated record
             return response()->json($record, 200);
@@ -135,7 +154,7 @@ class ServiceController extends Controller {
     public function destroy($id) {
         try {
             // Find the record by ID
-            $record = Service::find($id);
+            $record = ServiceProduct::find($id);
 
             if (!$record) {
                 // Return a 404 response if the record is not found

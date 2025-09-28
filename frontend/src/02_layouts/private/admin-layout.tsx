@@ -29,6 +29,11 @@ const AdminLayout = () => {
           url: '/admin/mails',
           icon: FaEnvelope,
         },
+        {
+          title: 'Services',
+          url: '/admin/services',
+          icon: FaEnvelope,
+        },
       ],
     },
   ];

@@ -79,8 +79,8 @@ class DatabaseSeeder extends Seeder {
         $this->call([
             NotificationSeeder::class,
         ]);
-        $this->call([
-            ServiceSeeder::class,
-        ]);
+        // $this->call([
+        //     ServiceSeeder::class,
+        // ]);
     }
 }

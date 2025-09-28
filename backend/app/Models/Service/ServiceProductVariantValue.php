@@ -5,7 +5,7 @@ namespace App\Models\Service;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
-class Service extends Model {
+class ServiceProductVariantValue extends Model {
     use SoftDeletes;
 
     protected $guarded = [
@@ -13,4 +13,8 @@ class Service extends Model {
         'created_at',
         'updated_at',
     ];
+
+    public function service_product_variant_attribute() {
+        return $this->belongsTo(ServiceProductVariantAttribute::class);
+    }
 }

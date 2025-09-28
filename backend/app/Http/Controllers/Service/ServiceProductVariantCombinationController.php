@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Service;
 
 use App\Helpers\QueryHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Service\Service;
+use App\Models\Service\ServiceProductVariantCombination;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
-class ServiceController extends Controller {
+class ServiceProductVariantCombinationController extends Controller {
     /**
      * Display a paginated list of records with optional filtering and search.
      */
@@ -16,7 +17,10 @@ class ServiceController extends Controller {
 
         try {
             // Initialize the query builder
-            $query = Service::query();
+            $query = ServiceProductVariantCombination::with([
+                'service_product_variant:id,sku',
+                'service_product_variant_value:id,value',
+            ]);
 
             // Define the default query type
             $type = 'paginate';
@@ -28,8 +32,7 @@ class ServiceController extends Controller {
                 $search = $request->input('search');
                 // Apply search conditions to the query
                 $query->where(function ($query) use ($search) {
-                    $query->where('id', 'LIKE', '%'.$search.'%')
-                        ->orWhere('label', 'LIKE', '%'.$search.'%');
+                    $query->where('id', 'LIKE', '%'.$search.'%');
                 });
             }
 
@@ -67,7 +70,7 @@ class ServiceController extends Controller {
      */
     public function show($id) {
         // Find the record by ID
-        $record = Service::where('id', $id)
+        $record = ServiceProductVariantCombination::where('id', $id)
             ->first();
 
         if (!$record) {
@@ -84,10 +87,14 @@ class ServiceController extends Controller {
     /**
      * Store a newly created record in storage.
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         try {
-            // create a new record
-            $record = Service::create($request->all());
+            // Prepare the data
+            $data = $request->all();
+
+            // Create a new record
+            $record = ServiceProductVariantCombination::create($data);
 
             // Return the created record
             return response()->json($record, 201);
@@ -103,10 +110,11 @@ class ServiceController extends Controller {
     /**
      * Update the specified record in storage.
      */
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         try {
             // Find the record by ID
-            $record = Service::find($id);
+            $record = ServiceProductVariantCombination::find($id);
 
             if (!$record) {
                 // Return a 404 response if the record is not found
@@ -115,8 +123,11 @@ class ServiceController extends Controller {
                 ], 404);
             }
 
+            // Prepare the data for update
+            $data = $request->all();
+
             // Update the record
-            $record->update($request->all());
+            $record->update($data);
 
             // Return the updated record
             return response()->json($record, 200);
@@ -135,7 +146,7 @@ class ServiceController extends Controller {
     public function destroy($id) {
         try {
             // Find the record by ID
-            $record = Service::find($id);
+            $record = ServiceProductVariantCombination::find($id);
 
             if (!$record) {
                 // Return a 404 response if the record is not found
