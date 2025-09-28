@@ -1,17 +1,11 @@
+import CustomerTemplate from '@/03_templates/main-template/customer-template/customer-template';
 import { Outlet } from 'react-router';
-import useAuthUserStore from '@/05_stores/_common/auth-user-store';
-import { Button } from '@/components/ui/button';
 
 const CustomerLayout = () => {
-  const { clearAuthUser } = useAuthUserStore();
-
   return (
-    <div>
-      <Button onClick={clearAuthUser}>Logout</Button>
-      <br />
-      customer layout
+    <CustomerTemplate>
       <Outlet />
-    </div>
+    </CustomerTemplate>
   );
 };
 
