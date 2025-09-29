@@ -11,16 +11,10 @@ import ServicesListSection from "./services-list-section";
 import { FaCartPlus } from "react-icons/fa6";
 import PageHeader from "@/components/typography/page-header";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router";
 
 const ViewServicePage = () => {
     const { id } = useParams();
-    const navigate = useNavigate();
-
-    const goToCheckout = () => {
-        navigate(`/service/checkout/${id}`);
-    };
-
     return (
         <>
             <Card className="border border-gray-200 shadow-sm mb-4">
@@ -80,13 +74,13 @@ const ViewServicePage = () => {
                                 </Button>
 
                                 {/* Book Now */}
-                                <Button
-                                    variant="destructive"
-                                    onClick={goToCheckout}
-                                >
-                                    <FaCartPlus className="mr-2 h-4 w-4" />
-                                    Book Now
+                                <Button asChild variant="destructive">
+                                    <Link to={`/service/checkout/${id}`}>
+                                        <FaCartPlus className="mr-2 h-4 w-4" />
+                                        Book Now
+                                    </Link>
                                 </Button>
+
                             </div>
 
                         </div>
