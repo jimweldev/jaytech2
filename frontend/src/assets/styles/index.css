@@ -168,3 +168,14 @@
 html {
   font-size: var(--font-size, 1rem);
 }
+
+#myCarousel {
+  --f-carousel-gap: 20px;
+  --f-carousel-slide-width: 400px;
+  --f-carousel-slide-padding: 60px;
+  --f-carousel-slide-bg: #eee;
+  --f-progressbar-color: #ff3520;
+
+  /* add a fixed height for the carousel container */
+  height: 200px;               /* or use min-height if you want it flexible */
+}
