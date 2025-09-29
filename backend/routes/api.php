@@ -149,3 +149,4 @@ Route::middleware('auth.middleware')->group(function () {
 // ==============
 // === TASKS
 Route::resource('/tasks', TaskController::class);
+Route::post('/tasks/create-payment-intent', [TaskController::class, 'createPaymentIntent']);
