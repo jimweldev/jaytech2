@@ -3,8 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Service\ServiceCategory;
-use App\Models\Service\ServiceFormType;
 use App\Models\Service\Service;
 use Illuminate\Support\Str;
 

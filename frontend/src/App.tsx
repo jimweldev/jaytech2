@@ -3,6 +3,10 @@ import DashboardPage from './01_pages/private/admin/dashboard/dashboard-page';
 import MailLogsTab from './01_pages/private/admin/mails/_tabs/mail-logs/mail-logs-tab';
 import MailTemplatesTab from './01_pages/private/admin/mails/_tabs/mail-templates/mail-templates-tab';
 import MailsPage from './01_pages/private/admin/mails/mails-page';
+import ServiceProductVariantsTab from './01_pages/private/admin/services/_tabs/service-product-variants/service-product-variants-tab';
+import ServiceProductsTab from './01_pages/private/admin/services/_tabs/service-products/service-products-tab';
+import ServicesTab from './01_pages/private/admin/services/_tabs/services/services-tab';
+import ServicesPage from './01_pages/private/admin/services/services-page';
 import GlobalDropdownsTab from './01_pages/private/admin/systems/_tabs/global-dropdowns/global-dropdowns-tab';
 import SystemSettingsTab from './01_pages/private/admin/systems/_tabs/system-settings/system-settings-tab';
 import SystemsPage from './01_pages/private/admin/systems/systems-page';
@@ -185,6 +189,28 @@ const App = () => {
                     },
                   ],
                 },
+                  {
+                    path: 'services',
+                    element: <ServicesPage />,
+                    children: [
+                      {
+                        index: true,
+                        element: <Navigate to="services" replace />,
+                      },
+                      {
+                        path: 'services',
+                        element: <ServicesTab />,
+                      },
+                      {
+                        path: 'service-products',
+                        element: <ServiceProductsTab />,
+                      },
+                      {
+                        path: 'service-product-variants',
+                        element: <ServiceProductVariantsTab />,
+                      },
+                    ],
+                  },
               ],
             },
             // HOME LAYOUT
