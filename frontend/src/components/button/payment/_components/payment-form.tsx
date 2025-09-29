@@ -17,15 +17,11 @@ import {
 
 interface PaymentFormProps {
   amount: number;
-  open: boolean; // receive from parent
-  onOpenChange: (open: boolean) => void; // control from parent
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-const PaymentForm: React.FC<PaymentFormProps> = ({
-  amount,
-  open,
-  onOpenChange,
-}) => {
+const PaymentForm = ({ amount, open, onOpenChange }: PaymentFormProps) => {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -39,7 +35,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     const result = await (stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: window.location.href,
+        return_url: `${window.location.origin}/success`, // Stripe handles redirect
       },
     }) as Promise<{
       error?: StripeError;
@@ -51,12 +47,11 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
       toast.error(result.error.message);
     } else if (result.paymentIntent) {
       const pi = result.paymentIntent;
-      if (pi.status === 'succeeded') {
-        toast.success('Payment successful!');
-        onOpenChange(false);
-      } else {
+      if (pi.status !== 'succeeded') {
         toast.error(`Payment failed. Status: ${pi.status}`);
       }
+      // 👇 no success toast here because we redirect
+      onOpenChange(false);
     } else {
       toast.error('Payment failed.');
     }
