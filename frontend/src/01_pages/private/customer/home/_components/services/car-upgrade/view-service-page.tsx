@@ -1,20 +1,16 @@
-import { useParams } from "react-router-dom";
 import {
     Card,
-    CardHeader,
     CardTitle,
     CardBody,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import ServicesListSection from "./services-list-section";
 import { FaCartPlus } from "react-icons/fa6";
 import PageHeader from "@/components/typography/page-header";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
 
 const ViewServicePage = () => {
-    const { id } = useParams();
     return (
         <>
             <Card className="border border-gray-200 shadow-sm mb-4">
@@ -26,32 +22,21 @@ const ViewServicePage = () => {
                         <div className="flex items-center justify-center bg-gray-100 rounded-lg p-4">
                             <img
                                 src="https://www.apple.com/newsroom/images/2025/09/apple-unveils-iphone-17-pro-and-iphone-17-pro-max/article/Apple-iPhone-17-Pro-color-lineup-250909_inline.jpg.large.jpg"
-                                alt={`Service ${id}`}
+                                alt={`Service`}
                                 className="w-full max-w-sm rounded-lg object-contain"
                             />
                         </div>
 
-
                         {/* Details column */}
                         <div className="space-y-4 text-gray-700 text-sm md:text-base">
                             <CardTitle className="text-lg md:text-xl font-bold text-gray-800">
-                                Service {id} Title
+                                Service Title
                             </CardTitle>
 
                             <p>
-                                This is where you can place detailed information about Service {id}.
+                                This is where you can place detailed information about Service.
                                 Add a description, price, or any additional specs you need.
                             </p>
-
-                            <div className="grid w-full items-center gap-3">
-                                <Label htmlFor="brand">Brand</Label>
-                                <Input
-                                    type="text"
-                                    id="brand"
-                                    placeholder="Brand"
-                                    className="w-full text-sm"
-                                />
-                            </div>
 
                             <div className="grid w-full items-center gap-3">
                                 <Label htmlFor="model">Model</Label>
@@ -75,7 +60,7 @@ const ViewServicePage = () => {
 
                                 {/* Book Now */}
                                 <Button asChild variant="destructive">
-                                    <Link to={`/service/checkout/${id}`}>
+                                    <Link to={`/cart/checkout`}>
                                         <FaCartPlus className="mr-2 h-4 w-4" />
                                         Book Now
                                     </Link>
@@ -98,9 +83,6 @@ const ViewServicePage = () => {
 
                 </CardBody>
             </Card>
-
-
-            <ServicesListSection withHeader={false} />
         </>
     );
 };

@@ -43,8 +43,9 @@ import useAuthUserStore from './05_stores/_common/auth-user-store';
 import CartPage from './01_pages/private/customer/cart/cart-page';
 import BagPage from './01_pages/private/customer/bag/bag-page';
 import BagTab from './01_pages/private/customer/bag/bag-tabs/bag-tab';
-import ViewServicePage from './01_pages/private/customer/home/_components/view-service-page';
-import CheckoutPage from './01_pages/private/customer/home/_components/checkout-page';
+import ViewServicePage from './01_pages/private/customer/home/_components/services/car-upgrade/view-service-page';
+import CheckoutPage from './01_pages/private/customer/home/_components/services/car-upgrade/checkout/checkout-page';
+import CarBrandPage from './01_pages/private/customer/home/_components/services/car-upgrade/car-brands-page';
 
 const App = () => {
   const { token, user } = useAuthUserStore();
@@ -63,13 +64,20 @@ const App = () => {
           element: <h1>Services</h1>,
         },
         {
-          path: "service/:id",
-          element: <ViewServicePage />,
+          path: "service/car-upgrade",
+          children: [
+            {
+              path: '',
+              element: <CarBrandPage />,
+            },
+            {
+
+              path: "brand/:brand",
+              element: <ViewServicePage />,
+            },
+          ]
         },
-        {
-          path: "service/checkout/:id",
-          element: <CheckoutPage />,
-        },
+
         {
           path: 'cart',
           children: [
@@ -79,7 +87,7 @@ const App = () => {
             },
             {
               path: 'checkout',
-              element: <CheckboxPage />,
+              element: <CheckoutPage />,
             },
           ],
         },
@@ -189,28 +197,28 @@ const App = () => {
                     },
                   ],
                 },
-                  {
-                    path: 'services',
-                    element: <ServicesPage />,
-                    children: [
-                      {
-                        index: true,
-                        element: <Navigate to="services" replace />,
-                      },
-                      {
-                        path: 'services',
-                        element: <ServicesTab />,
-                      },
-                      {
-                        path: 'service-products',
-                        element: <ServiceProductsTab />,
-                      },
-                      {
-                        path: 'service-product-variants',
-                        element: <ServiceProductVariantsTab />,
-                      },
-                    ],
-                  },
+                {
+                  path: 'services',
+                  element: <ServicesPage />,
+                  children: [
+                    {
+                      index: true,
+                      element: <Navigate to="services" replace />,
+                    },
+                    {
+                      path: 'services',
+                      element: <ServicesTab />,
+                    },
+                    {
+                      path: 'service-products',
+                      element: <ServiceProductsTab />,
+                    },
+                    {
+                      path: 'service-product-variants',
+                      element: <ServiceProductVariantsTab />,
+                    },
+                  ],
+                },
               ],
             },
             // HOME LAYOUT
