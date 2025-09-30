@@ -13,11 +13,9 @@ use App\Http\Controllers\System\SystemGlobalDropdownController;
 use App\Http\Controllers\System\SystemSettingController;
 use App\Http\Controllers\User\UserImageController;
 use App\Http\Controllers\Service\ServiceController;
-use App\Http\Controllers\Service\ServiceProductController;
-use App\Http\Controllers\Service\ServiceProductVariantController;
-use App\Http\Controllers\Service\ServiceProductVariantAttributeController;
-use App\Http\Controllers\Service\ServiceProductVariantValueController;
-use App\Http\Controllers\Service\ServiceProductVariantCombinationController;
+use App\Http\Controllers\Service\ServiceItemController;
+use App\Http\Controllers\Service\ServiceBrandController;
+use App\Http\Controllers\Service\ServiceBrandModelController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('', function () {
@@ -93,20 +91,14 @@ Route::middleware('auth.middleware')->group(function () {
 
     // ==============
     // === SERVICES
-    // service product variant combinations
-    Route::resource('/services/products/variants/combinations', ServiceProductVariantCombinationController::class);
+    // service brands
+    Route::resource('/services/brands/models', ServiceBrandModelController::class);
 
-    // service product variant attributes
-    Route::resource('/services/products/variants/attributes', ServiceProductVariantAttributeController::class);
-    
-    // service product variant values
-    Route::resource('/services/products/variants/values', ServiceProductVariantValueController::class);
+    // service brands
+    Route::resource('/services/brands', ServiceBrandController::class);
 
-    // service product variants
-    Route::resource('/services/products/variants', ServiceProductVariantController::class);
-
-    // service products
-    Route::resource('/services/products', ServiceProductController::class);
+    // service items
+    Route::resource('/services/items', ServiceItemController::class);
 
     // services
     Route::resource('/services', ServiceController::class);
@@ -116,11 +108,6 @@ Route::middleware('auth.middleware')->group(function () {
     Route::get('/select/roles', [SelectController::class, 'getSelectRoles']);
     Route::get('/select/permissions', [SelectController::class, 'getSelectPermissions']);
     Route::get('/select/global-dropdowns', [SelectController::class, 'getSelectSystemGlobalDropdowns']);
-    Route::get('/select/services', [SelectController::class, 'getSelectServices']);
-    Route::get('/select/products', [SelectController::class, 'getSelectProducts']);
-    Route::get('/select/attributes', [SelectController::class, 'getSelectProductVariantAttributes']);
-    Route::get('/select/variants', [SelectController::class, 'getSelectVariants']);
-    Route::get('/select/variant-values', [SelectController::class, 'getSelectVariantValues']);
 
     // ==============
     // === SETTINGS

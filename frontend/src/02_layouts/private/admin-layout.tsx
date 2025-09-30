@@ -34,6 +34,22 @@ const AdminLayout = () => {
           url: '/admin/services',
           icon: FaEnvelope,
         },
+        {
+          title: 'Items',
+          url: '/admin/items',
+          icon: FaEnvelope,
+        },
+        {
+          title: 'Brands',
+          url: '/admin/brands',
+          icon: FaEnvelope,
+        },
+
+        {
+          title: 'Models',
+          url: '/admin/models',
+          icon: FaEnvelope,
+        },
       ],
     },
   ];

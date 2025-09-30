@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Service;
 
 use App\Helpers\QueryHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Service\Service;
+use App\Models\Service\ServiceBrandModelItem;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
 
-class ServiceController extends Controller {
+class ServiceBrandModelItemController extends Controller {
     /**
      * Display a paginated list of records with optional filtering and search.
      */
@@ -18,7 +18,7 @@ class ServiceController extends Controller {
 
         try {
             // Initialize the query builder
-            $query = Service::query();
+            $query = ServiceBrandModelItem::query();
 
             // Define the default query type
             $type = 'paginate';
@@ -68,7 +68,7 @@ class ServiceController extends Controller {
      */
     public function show($id) {
         // Find the record by ID
-        $record = Service::where('id', $id)
+        $record = ServiceBrandModelItem::where('id', $id)
             ->first();
 
         if (!$record) {
@@ -88,7 +88,7 @@ class ServiceController extends Controller {
     public function store(Request $request) {
         try {
             // create a new record
-            $record = Service::create($request->all());
+            $record = ServiceBrandModelItem::create($request->all());
 
             // Return the created record
             return response()->json($record, 201);
@@ -107,7 +107,7 @@ class ServiceController extends Controller {
     public function update(Request $request, $id) {
         try {
             // Find the record by ID
-            $record = Service::find($id);
+            $record = ServiceBrandModelItem::find($id);
 
             if (!$record) {
                 // Return a 404 response if the record is not found
@@ -136,7 +136,7 @@ class ServiceController extends Controller {
     public function destroy($id) {
         try {
             // Find the record by ID
-            $record = Service::find($id);
+            $record = ServiceBrandModelItem::find($id);
 
             if (!$record) {
                 // Return a 404 response if the record is not found
