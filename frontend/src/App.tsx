@@ -27,6 +27,7 @@ import RadioGroupPage from './01_pages/private/examples/forms/radio-group-page';
 import ReactDropzonePage from './01_pages/private/examples/forms/react-dropzone-page';
 import ReactQuillPage from './01_pages/private/examples/forms/react-quill-page';
 import TextareaPage from './01_pages/private/examples/forms/textarea-page';
+import SuccessPage from './01_pages/private/fallbacks/payment-success-page';
 import HomePage from './01_pages/private/home/home-page';
 import GeneralPage from './01_pages/private/settings/general-page';
 import PasswordPage from './01_pages/private/settings/password-page';
@@ -320,6 +321,12 @@ const App = () => {
 
         // ACCOUNT TYPE | CUSTOMER
         ...(user?.account_type === 'Customer' ? customerRoutes : []),
+
+        // success page
+        {
+          path: 'success',
+          element: <SuccessPage />,
+        },
       ],
     },
     {

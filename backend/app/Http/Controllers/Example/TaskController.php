@@ -6,6 +6,8 @@ use App\Helpers\QueryHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Example\Task;
 use Illuminate\Http\Request;
+use Stripe\Stripe;
+use Stripe\PaymentIntent;
 
 class TaskController extends Controller {
     /**
@@ -156,5 +158,23 @@ class TaskController extends Controller {
                 'error' => $e->getMessage(),
             ], 400);
         }
+    }
+
+    public function createPaymentIntent(Request $request) {
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $amount = $request->input('amount', 1 * 100);
+        $description = $request->input('description', 'Default payment description');
+
+        $paymentIntent = PaymentIntent::create([
+            'amount' => $amount,
+            'currency' => 'eur',
+            'description' => $description,
+            'automatic_payment_methods' => ['enabled' => true],
+        ]);
+
+        return response()->json([
+            'clientSecret' => $paymentIntent->client_secret,
+        ]);
     }
 }
