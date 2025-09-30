@@ -47,6 +47,8 @@ import BagTab from './01_pages/private/customer/bag/bag-tabs/bag-tab';
 import ViewServicePage from './01_pages/private/customer/home/_components/services/car-upgrade/view-service-page';
 import CheckoutPage from './01_pages/private/customer/home/_components/services/car-upgrade/checkout/checkout-page';
 import CarBrandPage from './01_pages/private/customer/home/_components/services/car-upgrade/car-brands-page';
+import ComputerBrandPage from './01_pages/private/customer/home/_components/services/computer-upgrade/computer-brands-page';
+import RepairBrandPage from './01_pages/private/customer/home/_components/services/repair/repair-brands-page';
 
 const App = () => {
   const { token, user } = useAuthUserStore();
@@ -76,6 +78,26 @@ const App = () => {
               path: "brand/:brand",
               element: <ViewServicePage />,
             },
+          ]
+        },
+
+        {
+          path: 'service/computer-upgrade',
+          children: [
+            {
+              path: '',
+              element: <ComputerBrandPage />,
+            }
+          ]
+        },
+
+        {
+          path: 'service/repair',
+          children: [
+            {
+              path: '',
+              element: <RepairBrandPage />,
+            }
           ]
         },
 
