@@ -1,27 +1,46 @@
 import { AxiosError } from 'axios';
+import { components, type GroupBase, type OptionProps } from 'react-select';
 import { AsyncPaginate, type LoadOptions } from 'react-select-async-paginate';
 import { toast } from 'sonner';
 import type { ReactSelectOption } from '@/04_types/_common/react-select-option';
-import type { ServiceProductVariantAttribute } from '@/04_types/service/service-product-variant-attribute';
+import type { ServiceBrandCategory } from '@/04_types/service/service-brand-category';
 import { mainInstance } from '@/07_instances/main-instance';
 
-const AttributeSelect = ({ ...props }) => {
+type SeviceBrandCategoryOptionData = {
+  value: string;
+  label: string;
+  brand: string;
+};
+
+const CategoryOption = (
+  props: OptionProps<SeviceBrandCategoryOptionData, false>,
+) => (
+  <components.Option {...props}>
+    <div className="flex flex-col">
+      <h6>{props.data.label}</h6>
+      <small className="text-muted-foreground">{props.data.brand}</small>
+    </div>
+  </components.Option>
+);
+
+const ServiceBrandCategorySelect = ({ ...props }) => {
   const loadOptions: LoadOptions<
-    ReactSelectOption,
-    never,
+    SeviceBrandCategoryOptionData,
+    GroupBase<SeviceBrandCategoryOptionData>,
     { page: number }
   > = async (searchQuery, _loadedOptions, additional = { page: 1 }) => {
     const page = additional.page || 1;
 
     try {
       const response = await mainInstance.get(
-        `/select/attributes?page=${page}&search=${searchQuery}&sort=label`,
+        `/select/service-brand-categories?page=${page}&search=${searchQuery}&sort=id`,
       );
 
       const options = response.data.records.map(
-        (role: ServiceProductVariantAttribute) => ({
-          value: role.id,
-          label: role.label,
+        (category: ServiceBrandCategory) => ({
+          value: category.id,
+          label: category.service?.label,
+          brand: category.service_brand?.label,
         }),
       );
 
@@ -48,22 +67,31 @@ const AttributeSelect = ({ ...props }) => {
     }
   };
 
+  const shouldLoadMore = (
+    scrollHeight: number,
+    clientHeight: number,
+    scrollTop: number,
+  ) => {
+    return scrollHeight - (scrollTop + clientHeight) < clientHeight * 5;
+  };
+
   return (
     <AsyncPaginate
-      className="react-select-container"
+      className="react-select-container w-full"
       classNamePrefix="react-select"
       loadOptions={loadOptions}
       debounceTimeout={200}
       additional={{
         page: 1,
       }}
-      closeMenuOnSelect={!props.isMulti}
+      components={{ Option: CategoryOption }}
+      shouldLoadMore={shouldLoadMore}
       {...(props.isMulti && {
         filterOption: (candidate: ReactSelectOption) => {
           const selectedValues = (props.value || []).map(
-            (item: ReactSelectOption) => item.value,
+            (item: ReactSelectOption) => item.value.toString(),
           );
-          return !selectedValues.includes(candidate.value);
+          return !selectedValues.includes(candidate.value.toString());
         },
       })}
       {...props}
@@ -71,4 +99,4 @@ const AttributeSelect = ({ ...props }) => {
   );
 };
 
-export default AttributeSelect;
+export default ServiceBrandCategorySelect;

@@ -10,6 +10,7 @@ import ReactImage from '@/components/image/react-image';
 import InputGroup from '@/components/input-group/input-group';
 import Tooltip from '@/components/tooltip/tooltip';
 import PageHeader from '@/components/typography/page-header';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardBody } from '@/components/ui/card';
 import { TableCell, TableRow } from '@/components/ui/table';
@@ -41,7 +42,8 @@ const ItemsPage = () => {
   const columns: DataTableColumn[] = [
     { label: '#', column: 'id', className: 'w-[80px]' },
     { label: 'Label', column: 'label' },
-    { label: 'Categories' },
+    { label: 'Brand' },
+    { label: 'Service' },
     { label: 'Created At', column: 'created_at', className: 'w-[200px]' },
     { label: 'Actions', className: 'w-[100px]' },
   ];
@@ -60,7 +62,7 @@ const ItemsPage = () => {
 
   return (
     <>
-      <PageHeader className="mb-3">Data Table List</PageHeader>
+      <PageHeader className="mb-3">Items</PageHeader>
 
       {/* Card */}
       <Card ref={fancyboxRef}>
@@ -84,12 +86,10 @@ const ItemsPage = () => {
                             filePath={item.thumbnail_path}
                             data-fancybox={`${item.id}`}
                             data-caption={item.label}
-                            fallback="/images/default-avatar.png"
                           >
                             <ReactImage
                               className="outline-primary border-card flex size-7 items-center justify-center overflow-hidden rounded-xs border-1 outline-2"
                               src={`${import.meta.env.VITE_STORAGE_BASE_URL}${item?.thumbnail_path}`}
-                              fallback="/images/default-avatar.png"
                             />
                           </FancyboxViewer>
                         </div>
@@ -100,6 +100,39 @@ const ItemsPage = () => {
                           </h6>
                         </div>
                       </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <div className="shrink-0">
+                          <FancyboxViewer
+                            baseUrl={import.meta.env.VITE_STORAGE_BASE_URL}
+                            filePath={
+                              item.service_brand_category?.service_brand
+                                ?.thumbnail_path
+                            }
+                            data-fancybox={`${item.service_brand_category?.service_brand?.id}`}
+                            data-caption={
+                              item.service_brand_category?.service_brand?.label
+                            }
+                          >
+                            <ReactImage
+                              className="outline-primary border-card flex size-7 items-center justify-center overflow-hidden rounded-xs border-1 outline-2"
+                              src={`${import.meta.env.VITE_STORAGE_BASE_URL}${item?.service_brand_category?.service_brand?.thumbnail_path}`}
+                            />
+                          </FancyboxViewer>
+                        </div>
+
+                        <div>
+                          <h6 className="text-xs font-semibold">
+                            {item.service_brand_category?.service_brand?.label}
+                          </h6>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge>
+                        {item.service_brand_category?.service?.label}
+                      </Badge>
                     </TableCell>
                     <TableCell>
                       {getDateTimezone(item.created_at, 'date_time')}

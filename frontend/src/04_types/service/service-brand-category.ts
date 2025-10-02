@@ -1,7 +1,12 @@
+import type { Service } from './service';
+import type { ServiceBrand } from './service-brand';
+
 export type ServiceBrandCategory = {
   id?: number;
-  service_brand_id?: string;
-  label?: string;
+  service_id?: number;
+  service_brand_id?: number;
+  service?: Service;
+  service_brand?: ServiceBrand;
   created_at?: Date;
   updated_at?: Date;
 };

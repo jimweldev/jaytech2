@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { mainInstance } from '@/07_instances/main-instance';
 import ImageCropper from '@/components/image/image-cropper';
 import InputGroup from '@/components/input-group/input-group';
+import ServiceBrandCategorySelect from '@/components/react-select/service-brand-category-select';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -29,6 +30,19 @@ import { resizeImage } from '@/lib/image/resize-image';
 
 // Zod schema to validate the form input
 const FormSchema = z.object({
+  service_brand_category: z.object(
+    {
+      label: z.string().min(1, {
+        message: 'Required',
+      }),
+      value: z.number().min(1, {
+        message: 'Required',
+      }),
+    },
+    {
+      message: 'Required',
+    },
+  ),
   label: z.string().min(1, {
     message: 'Required',
   }),
@@ -50,6 +64,7 @@ const CreateModelDialog = ({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
+      service_brand_category: undefined,
       label: '',
     },
   });
@@ -98,8 +113,10 @@ const CreateModelDialog = ({
     }
 
     formData.append('label', data.label);
-    formData.append('service_brand_id', '1');
-    formData.append('service_brand_category_id', '1');
+    formData.append(
+      'service_brand_category_id',
+      data.service_brand_category.value.toString(),
+    );
 
     toast.promise(mainInstance.post(`/services/brands/models`, formData), {
       loading: 'Loading...',
@@ -153,6 +170,26 @@ const CreateModelDialog = ({
                     </Button>
                   </InputGroup>
                 </div>
+                {/* ServiceBrandCategorySelect */}
+                <FormField
+                  control={form.control}
+                  name="service_brand_category"
+                  render={({ field, fieldState }) => (
+                    <FormItem className="col-span-12">
+                      <FormLabel>Service</FormLabel>
+                      <FormControl>
+                        <ServiceBrandCategorySelect
+                          className={`${fieldState.invalid ? 'invalid' : ''}`}
+                          placeholder="Select service"
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 {/* Label field */}
                 <FormField
                   control={form.control}

@@ -2,18 +2,15 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Service\Service;
-use Illuminate\Support\Str;
+use Illuminate\Database\Seeder;
 
-class ServiceSeeder extends Seeder
-{
+class ServiceSeeder extends Seeder {
     /**
      * Run the database seeds.
      */
-    public function run(): void
-    {
-        // Create service categories            
+    public function run(): void {
+        // Create service categories
         $categories = [
             [
                 'label' => 'Phone Repair',
@@ -53,7 +50,7 @@ class ServiceSeeder extends Seeder
         $formTypes = [
             [
                 'label' => 'Default Form',
-            ]
+            ],
         ];
 
         ServiceFormType::insert($formTypes);

@@ -6,8 +6,6 @@ use App\Helpers\QueryHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Service\ServiceBrandModelItem;
 use Illuminate\Http\Request;
-use Stripe\Stripe;
-use Stripe\PaymentIntent;
 
 class ServiceBrandModelItemController extends Controller {
     /**
@@ -18,7 +16,11 @@ class ServiceBrandModelItemController extends Controller {
 
         try {
             // Initialize the query builder
-            $query = ServiceBrandModelItem::query();
+            $query = ServiceBrandModelItem::with([
+                'service_brand_model.service_brand_category.service_brand',
+                'service_brand_model.service_brand_category.service',
+                'service_item',
+            ]);
 
             // Define the default query type
             $type = 'paginate';

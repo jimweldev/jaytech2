@@ -2,13 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { FaTimes } from 'react-icons/fa';
-import CreatableSelect from 'react-select/creatable';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import type { ReactSelectOption } from '@/04_types/_common/react-select-option';
 import useServiceBrandStore from '@/05_stores/service/service-brand-store';
 import { mainInstance } from '@/07_instances/main-instance';
 import ImageCropper from '@/components/image/image-cropper';
 import InputGroup from '@/components/input-group/input-group';
+import ServiceSelect from '@/components/react-select/service-select';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -34,7 +35,7 @@ const FormSchema = z.object({
   label: z.string().min(1, {
     message: 'Required',
   }),
-  categories: z.any().optional(), // <-- added
+  services: z.any().optional(),
 });
 
 type UpdateBrandDialogProps = {
@@ -54,7 +55,7 @@ const UpdateBrandDialog = ({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       label: '',
-      categories: [],
+      services: [],
     },
   });
 
@@ -62,8 +63,11 @@ const UpdateBrandDialog = ({
     if (selectedServiceBrand) {
       form.reset({
         label: selectedServiceBrand.label || '',
-        categories: selectedServiceBrand.categories
-          ? selectedServiceBrand.categories.map((cat: any) => cat.label) // <-- map to string
+        services: selectedServiceBrand.service_brand_categories
+          ? selectedServiceBrand.service_brand_categories.map(category => ({
+              value: category.id,
+              label: category.service?.label,
+            }))
           : [],
       });
 
@@ -122,14 +126,14 @@ const UpdateBrandDialog = ({
       formData.append('thumbnail', file);
     }
 
-    formData.append('label', data.label);
+    const services = data.services.map(
+      (service: ReactSelectOption) => service.value,
+    );
 
-    // Append categories
-    if (data.categories && data.categories.length > 0) {
-      data.categories.forEach((cat: string, index: number) => {
-        formData.append(`categories[${index}]`, cat);
-      });
-    }
+    formData.append('label', data.label);
+    services.forEach((id: string | number) => {
+      formData.append('service_ids[]', id.toString());
+    });
 
     toast.promise(
       mainInstance.post(
@@ -202,7 +206,7 @@ const UpdateBrandDialog = ({
                   name="label"
                   render={({ field }) => (
                     <FormItem className="col-span-12">
-                      <FormLabel>Label</FormLabel>
+                      <FormLabel>Brand Name</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -211,26 +215,18 @@ const UpdateBrandDialog = ({
                   )}
                 />
 
-                {/* Categories (React Select Creatable) */}
                 <FormField
                   control={form.control}
-                  name="categories"
+                  name="services"
                   render={({ field, fieldState }) => (
                     <FormItem className="col-span-12">
-                      <FormLabel>Categories</FormLabel>
+                      <FormLabel>Services</FormLabel>
                       <FormControl>
-                        <CreatableSelect
-                          className={`react-select-container ${fieldState.invalid ? 'invalid' : ''}`}
-                          classNamePrefix="react-select"
-                          placeholder="Type and press enter to add category"
+                        <ServiceSelect
+                          className={`${fieldState.invalid ? 'invalid' : ''}`}
+                          value={field.value}
+                          onChange={field.onChange}
                           isMulti
-                          value={field.value?.map((v: string) => ({
-                            label: v,
-                            value: v,
-                          }))} // <-- now always string[] → options
-                          onChange={selected =>
-                            field.onChange(selected?.map(s => s.value) || [])
-                          }
                         />
                       </FormControl>
                       <FormMessage />

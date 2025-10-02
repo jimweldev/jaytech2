@@ -54,7 +54,7 @@ const ServicesPage = () => {
 
   return (
     <>
-      <PageHeader className="mb-3">Data Table List</PageHeader>
+      <PageHeader className="mb-3">Services</PageHeader>
 
       {/* Card */}
       <Card>

@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { FaTimes } from 'react-icons/fa';
-import CreatableSelect from 'react-select/creatable';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import useServiceItemStore from '@/05_stores/service/service-item-store';
 import { mainInstance } from '@/07_instances/main-instance';
 import ImageCropper from '@/components/image/image-cropper';
 import InputGroup from '@/components/input-group/input-group';
+import ServiceBrandCategorySelect from '@/components/react-select/service-brand-category-select';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -31,10 +31,22 @@ import { resizeImage } from '@/lib/image/resize-image';
 
 // Zod schema
 const FormSchema = z.object({
+  service_brand_category: z.object(
+    {
+      label: z.string().min(1, {
+        message: 'Required',
+      }),
+      value: z.number().min(1, {
+        message: 'Required',
+      }),
+    },
+    {
+      message: 'Required',
+    },
+  ),
   label: z.string().min(1, {
     message: 'Required',
   }),
-  categories: z.any().optional(), // <-- added
 });
 
 type UpdateItemDialogProps = {
@@ -53,18 +65,22 @@ const UpdateItemDialog = ({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
+      service_brand_category: undefined,
       label: '',
-      categories: [],
     },
   });
 
   useEffect(() => {
     if (selectedServiceItem) {
       form.reset({
+        service_brand_category: selectedServiceItem.service_brand_category
+          ? {
+              value: selectedServiceItem.service_brand_category.id || 0,
+              label:
+                selectedServiceItem.service_brand_category.service?.label || '',
+            }
+          : undefined,
         label: selectedServiceItem.label || '',
-        categories: selectedServiceItem.categories
-          ? selectedServiceItem.categories.map((cat: any) => cat.label) // <-- map to string
-          : [],
       });
 
       if (selectedServiceItem.thumbnail_path) {
@@ -122,14 +138,11 @@ const UpdateItemDialog = ({
       formData.append('thumbnail', file);
     }
 
+    formData.append(
+      'service_brand_category_id',
+      data.service_brand_category.value.toString(),
+    );
     formData.append('label', data.label);
-
-    // Append categories
-    if (data.categories && data.categories.length > 0) {
-      data.categories.forEach((cat: string, index: number) => {
-        formData.append(`categories[${index}]`, cat);
-      });
-    }
 
     toast.promise(
       mainInstance.post(
@@ -196,6 +209,26 @@ const UpdateItemDialog = ({
                   </InputGroup>
                 </div>
 
+                {/* ServiceBrandCategorySelect */}
+                <FormField
+                  control={form.control}
+                  name="service_brand_category"
+                  render={({ field, fieldState }) => (
+                    <FormItem className="col-span-12">
+                      <FormLabel>Service</FormLabel>
+                      <FormControl>
+                        <ServiceBrandCategorySelect
+                          className={`${fieldState.invalid ? 'invalid' : ''}`}
+                          placeholder="Select service"
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 {/* Label */}
                 <FormField
                   control={form.control}
@@ -205,33 +238,6 @@ const UpdateItemDialog = ({
                       <FormLabel>Label</FormLabel>
                       <FormControl>
                         <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Categories (React Select Creatable) */}
-                <FormField
-                  control={form.control}
-                  name="categories"
-                  render={({ field, fieldState }) => (
-                    <FormItem className="col-span-12">
-                      <FormLabel>Categories</FormLabel>
-                      <FormControl>
-                        <CreatableSelect
-                          className={`react-select-container ${fieldState.invalid ? 'invalid' : ''}`}
-                          classNamePrefix="react-select"
-                          placeholder="Type and press enter to add category"
-                          isMulti
-                          value={field.value?.map((v: string) => ({
-                            label: v,
-                            value: v,
-                          }))} // <-- now always string[] → options
-                          onChange={selected =>
-                            field.onChange(selected?.map(s => s.value) || [])
-                          }
-                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

@@ -6,8 +6,6 @@ use App\Helpers\QueryHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Service\Service;
 use Illuminate\Http\Request;
-use Stripe\Stripe;
-use Stripe\PaymentIntent;
 
 class ServiceController extends Controller {
     /**

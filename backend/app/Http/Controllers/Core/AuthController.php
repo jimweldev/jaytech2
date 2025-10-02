@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core;
 
+use App\Helpers\UserHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Core\User;
 use Illuminate\Http\JsonResponse;
@@ -11,7 +12,6 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use App\Helpers\UserHelper;
 
 class AuthController extends Controller {
     public function register(Request $request): JsonResponse {

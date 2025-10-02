@@ -9,13 +9,14 @@ use App\Http\Controllers\Example\TaskController;
 use App\Http\Controllers\Mail\MailLogController;
 use App\Http\Controllers\Mail\MailTemplateController;
 use App\Http\Controllers\Select\SelectController;
+use App\Http\Controllers\Service\ServiceBrandController;
+use App\Http\Controllers\Service\ServiceBrandModelController;
+use App\Http\Controllers\Service\ServiceBrandModelItemController;
+use App\Http\Controllers\Service\ServiceController;
+use App\Http\Controllers\Service\ServiceItemController;
 use App\Http\Controllers\System\SystemGlobalDropdownController;
 use App\Http\Controllers\System\SystemSettingController;
 use App\Http\Controllers\User\UserImageController;
-use App\Http\Controllers\Service\ServiceController;
-use App\Http\Controllers\Service\ServiceItemController;
-use App\Http\Controllers\Service\ServiceBrandController;
-use App\Http\Controllers\Service\ServiceBrandModelController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('', function () {
@@ -91,7 +92,10 @@ Route::middleware('auth.middleware')->group(function () {
 
     // ==============
     // === SERVICES
-    // service brands
+    // service  brand model items
+    Route::resource('/services/brands/models/items', ServiceBrandModelItemController::class);
+
+    // service brand models
     Route::resource('/services/brands/models', ServiceBrandModelController::class);
 
     // service brands
@@ -108,6 +112,9 @@ Route::middleware('auth.middleware')->group(function () {
     Route::get('/select/roles', [SelectController::class, 'getSelectRoles']);
     Route::get('/select/permissions', [SelectController::class, 'getSelectPermissions']);
     Route::get('/select/global-dropdowns', [SelectController::class, 'getSelectSystemGlobalDropdowns']);
+    Route::get('/select/services', [SelectController::class, 'getSelectServices']);
+    Route::get('/select/service-brand-categories', [SelectController::class, 'getSelectServiceBrandCategories']);
+    Route::get('/select/service-items', [SelectController::class, 'getSelectServiceItems']);
 
     // ==============
     // === SETTINGS

@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder {
             'password' => Hash::make('P@ssword123!'),
             'account_type' => 'Technician',
         ]);
-        
+
         // customer
         User::factory()->create([
             'first_name' => 'Customer',

@@ -2,12 +2,13 @@ import { useRef, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { FaTimes } from 'react-icons/fa';
-import CreatableSelect from 'react-select/creatable';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import type { ReactSelectOption } from '@/04_types/_common/react-select-option';
 import { mainInstance } from '@/07_instances/main-instance';
 import ImageCropper from '@/components/image/image-cropper';
 import InputGroup from '@/components/input-group/input-group';
+import ServiceSelect from '@/components/react-select/service-select';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -33,7 +34,7 @@ const FormSchema = z.object({
   label: z.string().min(1, {
     message: 'Required',
   }),
-  categories: z.any().optional(), // <-- add categories field
+  services: z.any().optional(), // <-- add categories field
 });
 
 // Component Props
@@ -53,7 +54,7 @@ const CreateBrandDialog = ({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       label: '',
-      categories: [],
+      services: [],
     },
   });
 
@@ -100,14 +101,14 @@ const CreateBrandDialog = ({
       formData.append('thumbnail', file);
     }
 
-    formData.append('label', data.label);
+    const services = data.services.map(
+      (service: ReactSelectOption) => service.value,
+    );
 
-    // Append categories
-    if (data.categories && data.categories.length > 0) {
-      data.categories.forEach((cat, index) => {
-        formData.append(`categories[${index}]`, cat);
-      });
-    }
+    formData.append('label', data.label);
+    services.forEach((id: string | number) => {
+      formData.append('service_ids[]', id.toString());
+    });
 
     toast.promise(mainInstance.post(`/services/brands`, formData), {
       loading: 'Loading...',
@@ -167,7 +168,7 @@ const CreateBrandDialog = ({
                   name="label"
                   render={({ field }) => (
                     <FormItem className="col-span-12">
-                      <FormLabel>Label</FormLabel>
+                      <FormLabel>Brand Name</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -176,28 +177,18 @@ const CreateBrandDialog = ({
                   )}
                 />
 
-                {/* Categories (React Select Creatable) */}
                 <FormField
                   control={form.control}
-                  name="categories"
+                  name="services"
                   render={({ field, fieldState }) => (
                     <FormItem className="col-span-12">
-                      <FormLabel>Categories</FormLabel>
+                      <FormLabel>Services</FormLabel>
                       <FormControl>
-                        <CreatableSelect
-                          className={`react-select-container ${fieldState.invalid ? 'invalid' : ''}`}
-                          classNamePrefix="react-select"
-                          placeholder="Type and press enter to add category"
+                        <ServiceSelect
+                          className={`${fieldState.invalid ? 'invalid' : ''}`}
+                          value={field.value}
+                          onChange={field.onChange}
                           isMulti
-                          // Map string[] → {label, value}[]
-                          value={field.value?.map(v => ({
-                            label: v,
-                            value: v,
-                          }))}
-                          // Map {label, value}[] → string[]
-                          onChange={selected =>
-                            field.onChange(selected?.map(s => s.value) || [])
-                          }
                         />
                       </FormControl>
                       <FormMessage />

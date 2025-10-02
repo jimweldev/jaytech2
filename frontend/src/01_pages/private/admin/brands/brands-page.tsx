@@ -42,7 +42,7 @@ const BrandsPage = () => {
   const columns: DataTableColumn[] = [
     { label: '#', column: 'id', className: 'w-[80px]' },
     { label: 'Label', column: 'label' },
-    { label: 'Categories' },
+    { label: 'Services' },
     { label: 'Created At', column: 'created_at', className: 'w-[200px]' },
     { label: 'Actions', className: 'w-[100px]' },
   ];
@@ -61,7 +61,7 @@ const BrandsPage = () => {
 
   return (
     <>
-      <PageHeader className="mb-3">Data Table List</PageHeader>
+      <PageHeader className="mb-3">Brands</PageHeader>
 
       {/* Card */}
       <Card ref={fancyboxRef}>
@@ -104,15 +104,17 @@ const BrandsPage = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap items-center gap-1">
-                        {brand?.categories?.length === 0 ? (
+                        {brand?.service_brand_categories?.length === 0 ? (
                           <Badge variant="outline">
                             <FaRegCircleXmark />
                             No categories
                           </Badge>
                         ) : (
                           <div className="flex flex-wrap items-center gap-1">
-                            {brand?.categories?.map(category => (
-                              <Badge key={category.id}>{category?.label}</Badge>
+                            {brand?.service_brand_categories?.map(category => (
+                              <Badge key={category.id}>
+                                {category?.service?.label}
+                              </Badge>
                             ))}
                           </div>
                         )}

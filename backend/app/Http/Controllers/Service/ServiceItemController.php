@@ -7,11 +7,8 @@ use App\Helpers\StorageHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Service\ServiceItem;
 use Illuminate\Http\Request;
-use Stripe\Stripe;
-use Stripe\PaymentIntent;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Str;
 
 class ServiceItemController extends Controller {
     /**
@@ -22,7 +19,7 @@ class ServiceItemController extends Controller {
 
         try {
             // Initialize the query builder
-            $query = ServiceItem::query();
+            $query = ServiceItem::with(['service_brand_category.service_brand', 'service_brand_category.service']);
 
             // Define the default query type
             $type = 'paginate';
@@ -89,131 +86,115 @@ class ServiceItemController extends Controller {
     /**
      * Store a newly created record in storage.
      */
-    public function store(Request $request)
-{
-    DB::beginTransaction();
+    public function store(Request $request) {
+        DB::beginTransaction();
 
-    try {
-        $filePath = null;
+        try {
+            $filePath = null;
 
-        if ($request->hasFile('thumbnail')) {
-            $thumbnail = $request->file('thumbnail');
-            $extension = $thumbnail->getClientOriginalExtension();
-            $uniqueName = Str::uuid().'.'.$extension;
+            if ($request->hasFile('thumbnail')) {
+                $thumbnail = $request->file('thumbnail');
+                $extension = $thumbnail->getClientOriginalExtension();
+                $uniqueName = Str::uuid().'.'.$extension;
 
-            $filePath = StorageHelper::uploadFileAs($thumbnail, 'thumbnails', $uniqueName);
+                $filePath = StorageHelper::uploadFileAs($thumbnail, 'thumbnails', $uniqueName);
 
-            if (!$filePath) {
-                return response()->json([
-                    'message' => "Failed to upload {$thumbnail->getClientOriginalName()}. File size too large.",
-                ], 400);
+                if (!$filePath) {
+                    return response()->json([
+                        'message' => "Failed to upload {$thumbnail->getClientOriginalName()}. File size too large.",
+                    ], 400);
+                }
             }
+
+            // ✅ Create item first
+            $item = ServiceItem::create([
+                'service_brand_category_id' => $request->service_brand_category_id,
+                'label' => $request->label,
+                'thumbnail_path' => $filePath,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Item created successfully',
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'An error occurred',
+                'error' => $e->getMessage(),
+            ], 400);
         }
-
-        // ✅ Create item first
-        $item = ServiceItem::create([
-            'service_brand_category_id' => $request->service_brand_category_id,
-            'label'          => $request->label,
-            'thumbnail_path' => $filePath,
-        ]);
-
-        DB::commit();
-
-        return response()->json([
-            'message' => 'Item created successfully',
-        ], 201);
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json([
-            'message' => 'An error occurred',
-            'error'   => $e->getMessage(),
-        ], 400);
     }
-}
-
-
 
     /**
      * Update the specified record in storage.
      */
-    public function update(Request $request, $id)
-{
-    DB::beginTransaction();
+    public function update(Request $request, $id) {
+        DB::beginTransaction();
 
-    try {
-        // Find the record by ID
-        $record = ServiceItem::find($id);
+        try {
+            // Find the record by ID
+            $record = ServiceItem::find($id);
 
-        if (!$record) {
-            return response()->json([
-                'message' => 'Record not found.',
-            ], 404);
-        }
-
-        $filePath = $record->thumbnail_path; // default to current thumbnail
-
-        // Case 1: A new file is uploaded
-        if ($request->hasFile('thumbnail')) {
-            $thumbnail = $request->file('thumbnail');
-            $extension = $thumbnail->getClientOriginalExtension();
-            $uniqueName = Str::uuid().'.'.$extension;
-
-            $filePath = StorageHelper::uploadFileAs($thumbnail, 'thumbnails', $uniqueName);
-
-            if (!$filePath) {
+            if (!$record) {
                 return response()->json([
-                    'message' => "Failed to upload {$thumbnail->getClientOriginalName()}. File size too large.",
-                ], 400);
+                    'message' => 'Record not found.',
+                ], 404);
             }
 
-            // Optionally delete old file if it exists
-            if ($record->thumbnail_path) {
-                StorageHelper::deleteFile($record->thumbnail_path);
+            $filePath = $record->thumbnail_path; // default to current thumbnail
+
+            // Case 1: A new file is uploaded
+            if ($request->hasFile('thumbnail')) {
+                $thumbnail = $request->file('thumbnail');
+                $extension = $thumbnail->getClientOriginalExtension();
+                $uniqueName = Str::uuid().'.'.$extension;
+
+                $filePath = StorageHelper::uploadFileAs($thumbnail, 'thumbnails', $uniqueName);
+
+                if (!$filePath) {
+                    return response()->json([
+                        'message' => "Failed to upload {$thumbnail->getClientOriginalName()}. File size too large.",
+                    ], 400);
+                }
+
+                // Optionally delete old file if it exists
+                if ($record->thumbnail_path) {
+                    StorageHelper::deleteFile($record->thumbnail_path);
+                }
             }
-        }
-        // Case 2: Explicit request to clear thumbnail
-        elseif ($request->has('thumbnail') && $request->thumbnail === '') {
-            if ($record->thumbnail_path) {
-                StorageHelper::deleteFile($record->thumbnail_path);
+            // Case 2: Explicit request to clear thumbnail
+            elseif ($request->has('thumbnail') && $request->thumbnail === '') {
+                if ($record->thumbnail_path) {
+                    StorageHelper::deleteFile($record->thumbnail_path);
+                }
+                $filePath = null;
             }
-            $filePath = null;
+
+            // Update item itself
+            $record->update([
+                'service_brand_category_id' => $request->service_brand_category_id,
+                'label' => $request->label,
+                'thumbnail_path' => $filePath,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Item updated successfully',
+                'record' => $record,
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'An error occurred',
+                'error' => $e->getMessage(),
+            ], 400);
         }
-
-        // Update item itself
-        $record->update([
-            'label'          => $request->label,
-            'thumbnail_path' => $filePath,
-        ]);
-
-        // ✅ Sync categories
-        if ($request->filled('categories') && is_array($request->categories)) {
-            // delete old categories
-            $record->categories()->delete();
-
-            // insert new ones
-            $record->categories()->createMany(
-                collect($request->categories)->map(fn($c) => ['label' => $c])->toArray()
-            );
-        }
-
-        DB::commit();
-
-        return response()->json([
-            'message' => 'Item updated successfully',
-            'record'  => $record->load('categories'), // return with categories
-        ], 200);
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json([
-            'message' => 'An error occurred',
-            'error'   => $e->getMessage(),
-        ], 400);
     }
-}
-
-
 
     /**
      * Remove the specified record from storage.
