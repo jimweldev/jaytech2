@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Support\Str;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -77,8 +77,7 @@ class User extends Authenticatable implements JWTSubject {
         return [];
     }
 
-    protected static function boot()
-    {
+    protected static function boot() {
         parent::boot();
 
         static::creating(function ($user) {

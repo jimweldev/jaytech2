@@ -6,8 +6,8 @@ use App\Helpers\QueryHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Example\Task;
 use Illuminate\Http\Request;
-use Stripe\Stripe;
 use Stripe\PaymentIntent;
+use Stripe\Stripe;
 
 class TaskController extends Controller {
     /**

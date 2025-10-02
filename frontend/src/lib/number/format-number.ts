@@ -1,10 +1,13 @@
 export const formatNumber = (
-  num: number | undefined,
+  num: number | string | null | undefined,
   decimal: number,
 ): string => {
-  if (!num) return '0';
+  if (num == null || num === '') return '0';
 
-  return num.toLocaleString('en-US', {
+  const parsed = typeof num === 'string' ? parseFloat(num) : num;
+  if (isNaN(parsed)) return '0';
+
+  return parsed.toLocaleString('en-US', {
     minimumFractionDigits: decimal,
     maximumFractionDigits: decimal,
   });

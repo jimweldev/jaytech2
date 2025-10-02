@@ -289,7 +289,7 @@ class UserController extends Controller {
                     ->with(['rbac_role' => function ($query) {
                         $query->select('id', 'label');
                     }]);
-            }]);;
+            }]);
 
             QueryHelper::apply($query, $queryParams, 'paginate');
 

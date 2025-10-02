@@ -6,13 +6,10 @@ use App\Helpers\QueryHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Core\RbacPermission;
 use App\Models\Core\RbacRole;
-use App\Models\System\SystemGlobalDropdown;
 use App\Models\Service\Service;
-use App\Models\Service\ServiceProduct;
-use App\Models\Service\ServiceProductVariantAttribute;
-use App\Models\Service\ServiceProductVariant;
-use App\Models\Service\ServiceProductVariantValue;
-
+use App\Models\Service\ServiceBrandCategory;
+use App\Models\Service\ServiceItem;
+use App\Models\System\SystemGlobalDropdown;
 use Illuminate\Http\Request;
 
 class SelectController extends Controller {
@@ -145,7 +142,7 @@ class SelectController extends Controller {
     }
 
     /**
-     * Display a paginated list of services with optional filtering and search.
+     * Display a paginated list of permissions with optional filtering and search.
      */
     public function getSelectServices(Request $request) {
         $queryParams = $request->all();
@@ -159,51 +156,8 @@ class SelectController extends Controller {
             if ($request->has('search')) {
                 $search = $request->input('search');
                 $query->where(function ($query) use ($search) {
-                    $query->where('label', 'LIKE', '%'.$search.'%')
-                        ->orWhere('description', 'LIKE', '%'.$search.'%');
-                });
-            }
-
-            $total = $query->count();
-
-            $limit = $request->input('limit', 10);
-            $page = $request->input('page', 1);
-            QueryHelper::applyLimitAndOffset($query, $limit, $page);
-
-            $records = $query->get();
-
-            return response()->json([
-                'records' => $records,
-                'meta' => [
-                    'total_records' => $total,
-                    'total_pages' => ceil($total / $limit),
-                ],
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An error occurred.',
-                'error' => $e->getMessage(),
-            ], 400);
-        }
-    }
-    
-    /**
-     * Display a paginated list of products with optional filtering and search.
-     */
-    public function getSelectProducts(Request $request) {
-        $queryParams = $request->all();
-
-        try {
-            $query = ServiceProduct::query();
-
-            $type = 'paginate';
-            QueryHelper::apply($query, $queryParams, $type);
-
-            if ($request->has('search')) {
-                $search = $request->input('search');
-                $query->where(function ($query) use ($search) {
-                    $query->where('label', 'LIKE', '%'.$search.'%')
-                        ->orWhere('description', 'LIKE', '%'.$search.'%');
+                    $query->where('id', 'LIKE', '%'.$search.'%')
+                        ->orWhere('label', 'LIKE', '%'.$search.'%');
                 });
             }
 
@@ -231,13 +185,13 @@ class SelectController extends Controller {
     }
 
     /**
-     * Display a paginated list of product variant attributes with optional filtering and search.
+     * Display a paginated list of permissions with optional filtering and search.
      */
-    public function getSelectProductVariantAttributes(Request $request) {
+    public function getSelectServiceBrandCategories(Request $request) {
         $queryParams = $request->all();
 
         try {
-            $query = ServiceProductVariantAttribute::query();
+            $query = ServiceBrandCategory::with(['service_brand', 'service']);
 
             $type = 'paginate';
             QueryHelper::apply($query, $queryParams, $type);
@@ -245,7 +199,7 @@ class SelectController extends Controller {
             if ($request->has('search')) {
                 $search = $request->input('search');
                 $query->where(function ($query) use ($search) {
-                    $query->where('label', 'LIKE', '%'.$search.'%');
+                    $query->where('id', 'LIKE', '%'.$search.'%');
                 });
             }
 
@@ -272,14 +226,11 @@ class SelectController extends Controller {
         }
     }
 
-    /**
-     * Display a paginated list of variants with optional filtering and search.
-     */
-    public function getSelectVariants(Request $request) {
+    public function getSelectServiceItems(Request $request) {
         $queryParams = $request->all();
 
         try {
-            $query = ServiceProductVariant::query();
+            $query = ServiceItem::query();
 
             $type = 'paginate';
             QueryHelper::apply($query, $queryParams, $type);
@@ -287,49 +238,7 @@ class SelectController extends Controller {
             if ($request->has('search')) {
                 $search = $request->input('search');
                 $query->where(function ($query) use ($search) {
-                    $query->where('sku', 'LIKE', '%'.$search.'%');
-                });
-            }
-
-            $total = $query->count();
-
-            $limit = $request->input('limit', 10);
-            $page = $request->input('page', 1);
-            QueryHelper::applyLimitAndOffset($query, $limit, $page);
-
-            $records = $query->get();
-
-            return response()->json([
-                'records' => $records,
-                'meta' => [
-                    'total_records' => $total,
-                    'total_pages' => ceil($total / $limit),
-                ],
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An error occurred.',
-                'error' => $e->getMessage(),
-            ], 400);
-        }
-    }
-
-    /**
-     * Display a paginated list of variant values with optional filtering and search.
-     */
-    public function getSelectVariantValues(Request $request) {
-        $queryParams = $request->all();
-
-        try {
-            $query = ServiceProductVariantValue::query();
-
-            $type = 'paginate';
-            QueryHelper::apply($query, $queryParams, $type);
-
-            if ($request->has('search')) {
-                $search = $request->input('search');
-                $query->where(function ($query) use ($search) {
-                    $query->where('value', 'LIKE', '%'.$search.'%');
+                    $query->where('id', 'LIKE', '%'.$search.'%');
                 });
             }
 

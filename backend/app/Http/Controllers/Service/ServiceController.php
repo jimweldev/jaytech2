@@ -28,8 +28,7 @@ class ServiceController extends Controller {
                 $search = $request->input('search');
                 // Apply search conditions to the query
                 $query->where(function ($query) use ($search) {
-                    $query->where('id', 'LIKE', '%'.$search.'%')
-                        ->orWhere('label', 'LIKE', '%'.$search.'%');
+                    $query->where('id', 'LIKE', '%'.$search.'%');
                 });
             }
 

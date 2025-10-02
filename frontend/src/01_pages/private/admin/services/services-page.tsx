@@ -1,27 +1,133 @@
-import { Outlet } from 'react-router';
-import PageTabList from '@/components/tabs/page-tab/page-tab-list';
-import PageTabTrigger from '@/components/tabs/page-tab/page-tab-trigger';
+import { useState } from 'react';
+import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
+import type { Service } from '@/04_types/service/service';
+import useServiceStore from '@/05_stores/service/service-store';
+import DataTable, {
+  type DataTableColumn,
+} from '@/components/data-table/data-table';
+import InputGroup from '@/components/input-group/input-group';
+import Tooltip from '@/components/tooltip/tooltip';
 import PageHeader from '@/components/typography/page-header';
+import { Button } from '@/components/ui/button';
+import { Card, CardBody } from '@/components/ui/card';
+import { TableCell, TableRow } from '@/components/ui/table';
+import useTanstackPaginateQuery from '@/hooks/tanstack/use-tanstack-paginate-query';
+import { getDateTimezone } from '@/lib/date/get-date-timezone';
+import CreateServiceDialog from './_dialogs/create-service-dialog';
+import DeleteServiceDialog from './_dialogs/delete-service-dialog';
+import UpdateServiceDialog from './_dialogs/update-service-dialog';
 
-// Main users page component with tabbed interface
 const ServicesPage = () => {
+  // Store
+  const { setSelectedService } = useServiceStore();
+
+  // Dialog States
+  const [openCreateServiceDialog, setOpenCreateServiceDialog] = useState(false);
+  const [openUpdateServiceDialog, setOpenUpdateServiceDialog] = useState(false);
+  const [openDeleteServiceDialog, setOpenDeleteServiceDialog] = useState(false);
+
+  // Tanstack query hook for pagination
+  const servicesPagination = useTanstackPaginateQuery<Service>({
+    endpoint: '/services',
+    defaultSort: 'id',
+  });
+
+  // Define table columns
+  const columns: DataTableColumn[] = [
+    { label: '#', column: 'id', className: 'w-[80px]' },
+    { label: 'Label', column: 'label' },
+    { label: 'Created At', column: 'created_at', className: 'w-[200px]' },
+    { label: 'Actions', className: 'w-[100px]' },
+  ];
+
+  // Actions buttons
+  const actions = (
+    <Button
+      size="sm"
+      onClick={() => {
+        setOpenCreateServiceDialog(true);
+      }}
+    >
+      Create
+    </Button>
+  );
+
   return (
     <>
-      <div className="mb-3 flex flex-col justify-between gap-1 @sm/main:flex-row @sm/main:items-center">
-        <PageHeader>Services</PageHeader>
+      <PageHeader className="mb-3">Services</PageHeader>
 
-        <PageTabList>
-          <PageTabTrigger to="services">Services</PageTabTrigger>
-          <PageTabTrigger to="service-products">
-            Service Products
-          </PageTabTrigger>
-          <PageTabTrigger to="service-product-variants">
-            Service Product Variants
-          </PageTabTrigger>
-        </PageTabList>
-      </div>
+      {/* Card */}
+      <Card>
+        <CardBody>
+          {/* Data Table */}
+          <DataTable
+            pagination={servicesPagination}
+            columns={columns}
+            actions={actions}
+          >
+            {/* Render rows only if data is present */}
+            {servicesPagination.data?.records
+              ? servicesPagination.data.records.map(service => (
+                  <TableRow key={service.id}>
+                    <TableCell>{service.id}</TableCell>
+                    <TableCell>{service.label}</TableCell>
+                    <TableCell>
+                      {getDateTimezone(service.created_at, 'date_time')}
+                    </TableCell>
+                    <TableCell>
+                      <InputGroup size="sm">
+                        {/* Update button */}
+                        <Tooltip content="Update">
+                          <Button
+                            variant="info"
+                            size="icon-xs"
+                            onClick={() => {
+                              setSelectedService(service);
+                              setOpenUpdateServiceDialog(true);
+                            }}
+                          >
+                            <FaPenToSquare />
+                          </Button>
+                        </Tooltip>
 
-      <Outlet />
+                        {/* Delete button */}
+                        <Tooltip content="Delete">
+                          <Button
+                            variant="destructive"
+                            size="icon-xs"
+                            onClick={() => {
+                              setSelectedService(service);
+                              setOpenDeleteServiceDialog(true);
+                            }}
+                          >
+                            <FaTrash />
+                          </Button>
+                        </Tooltip>
+                      </InputGroup>
+                    </TableCell>
+                  </TableRow>
+                ))
+              : null}
+          </DataTable>
+        </CardBody>
+      </Card>
+
+      {/* Dialogs */}
+      <CreateServiceDialog
+        open={openCreateServiceDialog}
+        setOpen={setOpenCreateServiceDialog}
+        refetch={servicesPagination.refetch}
+      />
+      <UpdateServiceDialog
+        open={openUpdateServiceDialog}
+        setOpen={setOpenUpdateServiceDialog}
+        refetch={servicesPagination.refetch}
+      />
+      <DeleteServiceDialog
+        open={openDeleteServiceDialog}
+        setOpen={setOpenDeleteServiceDialog}
+        refetch={servicesPagination.refetch}
+      />
     </>
   );
 };
