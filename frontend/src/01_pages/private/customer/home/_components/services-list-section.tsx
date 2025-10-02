@@ -1,11 +1,8 @@
+import PageHeader from "@/components/typography/page-header";
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router";
 
-type ServiceListSectionProps = {
-  withHeader?: boolean;
-};
-
-const ServiceListSection = ({ withHeader }: ServiceListSectionProps) => {
+const ServiceListSection = () => {
 
   const services = [
     {
@@ -31,13 +28,12 @@ const ServiceListSection = ({ withHeader }: ServiceListSectionProps) => {
   return (
     <>
       {/* Header + Search */}
-      <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <h1
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <PageHeader
           className="text-2xl font-bold text-gray-800 tracking-tight"
-          hidden={!withHeader}
         >
           Our Services
-        </h1>
+        </PageHeader>
       </div>
 
       {/* Cards Grid */}
