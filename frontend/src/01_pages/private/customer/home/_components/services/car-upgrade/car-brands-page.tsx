@@ -1,10 +1,20 @@
+import type { ServiceBrand } from "@/04_types/service/service-brand";
 import { Input } from "@/components/ui/input";
+import useTanstackPaginateQuery from "@/hooks/tanstack/use-tanstack-paginate-query";
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const CarBrandPage = () => {
-    const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
+    const [selectedBrand, setSelectedBrand] = useState([] as ServiceBrand | any);
     const modelsRef = useRef<HTMLDivElement | null>(null);
+
+    // Tanstack query hook for pagination
+    const tasksPagination = useTanstackPaginateQuery<ServiceBrand>({
+        endpoint: '/services/brands',
+        defaultSort: 'id',
+    });
+
+    console.log(selectedBrand)
 
     const carBrands = [
         { name: "Toyota", image: "https://global.toyota/pages/global_toyota/mobility/toyota-brand/emblem_001.jpg", models: ["Camry", "Corolla", "RAV4", "Highlander", "Sienna"] },
@@ -17,7 +27,7 @@ const CarBrandPage = () => {
         { name: "Volkswagen", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Volkswagen_logo_2019.svg/2048px-Volkswagen_logo_2019.svg.png", models: ["Golf", "Passat", "Tiguan"] },
     ];
 
-    const brand = carBrands.find((b) => b.name === selectedBrand);
+    // const brand = carBrands.find((b) => b.name === selectedBrand);
 
     // scroll to models when brand changes
     useEffect(() => {
@@ -50,7 +60,7 @@ const CarBrandPage = () => {
             </div>
 
             {/* Car Brands */}
-            <div className="container mx-auto py-12">
+            <div className="container mx-auto py-12 px-2">
                 <div className="max-w-6xl mx-auto text-center">
                     <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight px-4 text-gray-900 mb-4">
                         Choose Your Car Brand
@@ -69,7 +79,38 @@ const CarBrandPage = () => {
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                        {carBrands
+                        {tasksPagination.data?.records ? (
+                            tasksPagination.data.records.map((item) => (
+                                <button
+                                    key={item.label}
+                                    onClick={() => setSelectedBrand(item)}
+                                    className={`group bg-white rounded-xl border shadow-sm p-6 flex flex-col items-center transition-all duration-300 cursor-pointer ${selectedBrand === item.label
+                                        ? "border-blue-500 shadow-md"
+                                        : "border-gray-200 hover:border-blue-500 hover:shadow-md"
+                                        }`}
+                                >
+                                    <div className="w-24 h-14 flex items-center justify-center mb-3">
+                                        <img
+                                            src={item.thumbnail_path}
+                                            alt={item.label}
+                                            className="object-contain max-h-full transition-transform duration-300 group-hover:scale-105"
+                                        />
+                                    </div>
+                                    <h3
+                                        className={`text-lg font-semibold ${selectedBrand === item.label
+                                            ? "text-blue-600"
+                                            : "text-gray-800 group-hover:text-blue-600"
+                                            }`}
+                                    >
+                                        {item.label}
+                                    </h3>
+                                </button>
+
+                            ))
+                        ) : null}
+
+
+                        {/* {carBrands
                             .filter(({ name }) =>
                                 name.toLowerCase().includes(searchTerm.toLowerCase())
                             )
@@ -98,17 +139,17 @@ const CarBrandPage = () => {
                                         {name}
                                     </h3>
                                 </button>
-                            ))}
+                            ))} */}
                     </div>
                 </div>
             </div>
 
             {/* Car Models */}
-            {brand && (
-                <div ref={modelsRef} className="container mx-auto py-12">
+            {selectedBrand && (
+                <div ref={modelsRef} className="container mx-auto py-12 px-2">
                     <div className="max-w-6xl mx-auto text-center">
                         <h2 className="text-3xl sm:text-4xl font-extrabold px-4 tracking-tight text-gray-900 mb-4">
-                            Pick Your {brand.name} Model
+                            Pick Your {selectedBrand.name} Model
                         </h2>
 
                         {/* Model Search Bar */}
@@ -123,11 +164,7 @@ const CarBrandPage = () => {
                         </div>
 
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                            {brand.models
-                                .filter((model) =>
-                                    model.toLowerCase().includes(modelSearchTerm.toLowerCase())
-                                )
-                                .map((model) => (
+                            {/* {selectedBrand.services.map((model: any) => (
                                     <Link
                                         key={model}
                                         to={`/cart/checkout`}
@@ -135,7 +172,15 @@ const CarBrandPage = () => {
                                     >
                                         <span className="text-lg font-semibold text-gray-800">{model}</span>
                                     </Link>
-                                ))}
+                                ))} */}
+
+                                   {/* <Link
+                                        key={model}
+                                        to={`/cart/checkout`}
+                                        className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 p-4 flex flex-col items-center"
+                                    >
+                                        <span className="text-lg font-semibold text-gray-800">{model}</span>
+                                    </Link> */}
                         </div>
                     </div>
                 </div>

@@ -13,6 +13,8 @@ return new class extends Migration {
             $table->id();
             $table->string('label')->unique();
             $table->text('description')->nullable();
+            $table->string('slug');
+            $table->string('thumbnail_path')->nullable();
             $table->softDeletes();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();

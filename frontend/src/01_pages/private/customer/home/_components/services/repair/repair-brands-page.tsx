@@ -47,7 +47,7 @@ const RepairBrandPage = () => {
             </div>
 
             {/* Phone Brands */}
-            <div className="container mx-auto py-12">
+            <div className="container mx-auto py-12 px-2">
                 <div className="max-w-6xl mx-auto text-center">
                     <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight px-4 text-gray-900 mb-4">
                         Choose Your Phone Brand
@@ -102,7 +102,7 @@ const RepairBrandPage = () => {
 
             {/* Phone Models */}
             {brand && (
-                <div ref={modelsRef} className="container mx-auto py-12">
+                <div ref={modelsRef} className="container mx-auto py-12 px-2">
                     <div className="max-w-6xl mx-auto text-center">
                         <h2 className="text-3xl sm:text-4xl font-extrabold px-4 tracking-tight text-gray-900 mb-4">
                             Select Model for {brand.name}
