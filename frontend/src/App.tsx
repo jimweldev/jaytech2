@@ -139,210 +139,204 @@ const App = () => {
         // ACCOUNT TYPE | MAIN
         ...(user?.account_type === 'Main'
           ? [
-            // ADMIN LAYOUT
-            {
-              path: 'admin',
-              element: <AdminLayout />,
-              children: [
-                {
-                  index: true,
-                  element: <DashboardPage />,
-                },
-                {
-                  path: 'users',
-                  element: <UsersPage />,
-                  children: [
-                    {
-                      index: true,
-                      element: <Navigate to="active-users" replace />,
-                    },
-                    {
-                      path: 'active-users',
-                      element: <ActiveUsersTab />,
-                    },
-                    {
-                      path: 'archived-users',
-                      element: <ArchivedUsersTab />,
-                    },
-                    {
-                      path: 'rbac',
-                      element: <RbacTab />,
-                      children: [
-                        {
-                          index: true,
-                          element: <Navigate to="roles" replace />,
-                        },
-                        {
-                          path: 'roles',
-                          element: <RolesTab />,
-                        },
-                        {
-                          path: 'permissions',
-                          element: <PermissionsTab />,
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  path: 'systems',
-                  element: <SystemsPage />,
-                  children: [
-                    {
-                      index: true,
-                      element: <Navigate to="system-settings" replace />,
-                    },
-                    {
-                      path: 'system-settings',
-                      element: <SystemSettingsTab />,
-                    },
-                    {
-                      path: 'global-dropdowns',
-                      element: <GlobalDropdownsTab />,
-                    },
-                  ],
-                },
-                {
-                  path: 'mails',
-                  element: <MailsPage />,
-                  children: [
-                    {
-                      index: true,
-                      element: <Navigate to="logs" replace />,
-                    },
-                    {
-                      path: 'logs',
-                      element: <MailLogsTab />,
-                    },
-                    {
-                      path: 'templates',
-                      element: <MailTemplatesTab />,
-                    },
-                  ],
-                },
-                {
-                  path: 'services',
-                  element: <ServicesPage />,
-                  children: [
-                    {
-                      index: true,
-                      element: <Navigate to="services" replace />,
-                    },
-                    {
-                      path: 'services',
-                      element: <ServicesTab />,
-                    },
-                    {
-                      path: 'service-products',
-                      element: <ServiceProductsTab />,
-                    },
-                    {
-                      path: 'service-product-variants',
-                      element: <ServiceProductVariantsTab />,
-                    },
-                  ],
-                },
-                {
-                  path: 'drop-points',
-                  element: <DropPointsPage />,
-                },
-              ],
-            },
-            // HOME LAYOUT
-            {
-              element: <HomeLayout />,
-              children: [
-                {
-                  path: '',
-                  element: <HomePage />,
-                },
-              ],
-            },
-            // SETTINGS LAYOUT
-            {
-              path: 'settings',
-              element: <SettingsLayout />,
-              children: [
-                {
-                  index: true,
-                  element: <Navigate to="profile" replace />,
-                },
-                {
-                  path: 'profile',
-                  element: <ProfilePage />,
-                },
-                {
-                  path: 'password',
-                  element: <PasswordPage />,
-                },
-                {
-                  path: 'general',
-                  element: <GeneralPage />,
-                },
-              ],
-            },
-            // EXAMPLES LAYOUT
-            {
-              path: 'examples',
-              element: <ExamplesLayout />,
-              children: [
-                {
-                  index: true,
-                  element: <Navigate to="forms" replace />,
-                },
-                {
-                  path: 'forms',
-                  children: [
-                    {
-                      index: true,
-                      element: <InputPage />,
-                    },
-                    {
-                      path: 'textarea',
-                      element: <TextareaPage />,
-                    },
-                    {
-                      path: 'checkbox',
-                      element: <CheckboxPage />,
-                    },
-                    {
-                      path: 'radio-group',
-                      element: <RadioGroupPage />,
-                    },
-                    {
-                      path: 'react-dropzone',
-                      element: <ReactDropzonePage />,
-                    },
-                    {
-                      path: 'react-quill',
-                      element: <ReactQuillPage />,
-                    },
-                    {
-                      path: 'global-dropdown',
-                      element: <GlobalDropdownPage />,
-                    },
-                  ],
-                },
-                {
-                  path: 'data-table',
-                  children: [
-                    {
-                      index: true,
-                      element: <DataTableListPage />,
-                    },
-                    {
-                      path: 'grid',
-                      element: <DataTableGridPage />,
-                    },
-                    {
-                      path: 'list-grid',
-                      element: <DataTableListGridPage />,
-                    },
-                  ],
-                },
-              ],
-            },
-          ]
+              // ADMIN LAYOUT
+              {
+                path: 'admin',
+                element: <AdminLayout />,
+                children: [
+                  {
+                    index: true,
+                    element: <DashboardPage />,
+                  },
+                  {
+                    path: 'users',
+                    element: <UsersPage />,
+                    children: [
+                      {
+                        index: true,
+                        element: <Navigate to="active-users" replace />,
+                      },
+                      {
+                        path: 'active-users',
+                        element: <ActiveUsersTab />,
+                      },
+                      {
+                        path: 'archived-users',
+                        element: <ArchivedUsersTab />,
+                      },
+                      {
+                        path: 'rbac',
+                        element: <RbacTab />,
+                        children: [
+                          {
+                            index: true,
+                            element: <Navigate to="roles" replace />,
+                          },
+                          {
+                            path: 'roles',
+                            element: <RolesTab />,
+                          },
+                          {
+                            path: 'permissions',
+                            element: <PermissionsTab />,
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    path: 'systems',
+                    element: <SystemsPage />,
+                    children: [
+                      {
+                        index: true,
+                        element: <Navigate to="system-settings" replace />,
+                      },
+                      {
+                        path: 'system-settings',
+                        element: <SystemSettingsTab />,
+                      },
+                      {
+                        path: 'global-dropdowns',
+                        element: <GlobalDropdownsTab />,
+                      },
+                    ],
+                  },
+                  {
+                    path: 'mails',
+                    element: <MailsPage />,
+                    children: [
+                      {
+                        index: true,
+                        element: <Navigate to="logs" replace />,
+                      },
+                      {
+                        path: 'logs',
+                        element: <MailLogsTab />,
+                      },
+                      {
+                        path: 'templates',
+                        element: <MailTemplatesTab />,
+                      },
+                    ],
+                  },
+                  {
+                    path: 'services',
+                    element: <ServicesPage />,
+                  },
+                  {
+                    path: 'items',
+                    element: <ItemsPage />,
+                  },
+                  {
+                    path: 'brands',
+                    element: <BrandsPage />,
+                  },
+                  {
+                    path: 'models',
+                    element: <ModelsPage />,
+                  },
+                  {
+                    path: 'drop-points',
+                    element: <DropPointsPage />,
+                  },
+                ],
+              },
+              // HOME LAYOUT
+              {
+                element: <HomeLayout />,
+                children: [
+                  {
+                    path: '',
+                    element: <HomePage />,
+                  },
+                ],
+              },
+              // SETTINGS LAYOUT
+              {
+                path: 'settings',
+                element: <SettingsLayout />,
+                children: [
+                  {
+                    index: true,
+                    element: <Navigate to="profile" replace />,
+                  },
+                  {
+                    path: 'profile',
+                    element: <ProfilePage />,
+                  },
+                  {
+                    path: 'password',
+                    element: <PasswordPage />,
+                  },
+                  {
+                    path: 'general',
+                    element: <GeneralPage />,
+                  },
+                ],
+              },
+              // EXAMPLES LAYOUT
+              {
+                path: 'examples',
+                element: <ExamplesLayout />,
+                children: [
+                  {
+                    index: true,
+                    element: <Navigate to="forms" replace />,
+                  },
+                  {
+                    path: 'forms',
+                    children: [
+                      {
+                        index: true,
+                        element: <InputPage />,
+                      },
+                      {
+                        path: 'textarea',
+                        element: <TextareaPage />,
+                      },
+                      {
+                        path: 'checkbox',
+                        element: <CheckboxPage />,
+                      },
+                      {
+                        path: 'radio-group',
+                        element: <RadioGroupPage />,
+                      },
+                      {
+                        path: 'react-dropzone',
+                        element: <ReactDropzonePage />,
+                      },
+                      {
+                        path: 'react-quill',
+                        element: <ReactQuillPage />,
+                      },
+                      {
+                        path: 'global-dropdown',
+                        element: <GlobalDropdownPage />,
+                      },
+                    ],
+                  },
+                  {
+                    path: 'data-table',
+                    children: [
+                      {
+                        index: true,
+                        element: <DataTableListPage />,
+                      },
+                      {
+                        path: 'grid',
+                        element: <DataTableGridPage />,
+                      },
+                      {
+                        path: 'list-grid',
+                        element: <DataTableListGridPage />,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ]
           : []),
 
         // ACCOUNT TYPE | CUSTOMER
