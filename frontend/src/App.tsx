@@ -223,24 +223,18 @@ const App = () => {
                   {
                     path: 'services',
                     element: <ServicesPage />,
-                    children: [
-                      {
-                        index: true,
-                        element: <Navigate to="services" replace />,
-                      },
-                      {
-                        path: 'services',
-                        element: <ServicesTab />,
-                      },
-                      {
-                        path: 'service-products',
-                        element: <ServiceProductsTab />,
-                      },
-                      {
-                        path: 'service-product-variants',
-                        element: <ServiceProductVariantsTab />,
-                      },
-                    ],
+                  },
+                  {
+                    path: 'items',
+                    element: <ItemsPage />,
+                  },
+                  {
+                    path: 'brands',
+                    element: <BrandsPage />,
+                  },
+                  {
+                    path: 'models',
+                    element: <ModelsPage />,
                   },
                   {
                     path: 'drop-points',
