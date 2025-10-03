@@ -6,6 +6,7 @@ import {
   FaLaptopCode,
   FaLocationDot,
   FaScrewdriverWrench,
+  FaTicket,
   FaToolbox,
   FaUsers,
 } from 'react-icons/fa6';
@@ -64,6 +65,11 @@ const AdminLayout = () => {
           title: 'Drop Points',
           url: '/admin/drop-points',
           icon: FaLocationDot,
+        },
+        {
+          title: 'Vouchers',
+          url: '/admin/vouchers',
+          icon: FaTicket,
         },
       ],
     },

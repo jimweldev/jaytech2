@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-use App\Models\Mails\MailLog;
+use App\Models\Mail\MailLog;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -53,21 +53,21 @@ class MailHelper {
             foreach ($mailLog->mail_log_attachments as $attachment) {
                 try {
                     // Get the file content from the stored URL
-                    $fileContent = file_get_contents($storageBaseUrl.'/'.$attachment->file_path);
+                    $fileContent = file_get_contents($storageBaseUrl.''.$attachment->file_path);
 
                     if ($fileContent !== false) {
                         // Attach file data with original filename
-                        $message->attachData($fileContent, $attachment->file_name ?? basename($storageBaseUrl.'/'.$attachment->file_path));
+                        $message->attachData($fileContent, $attachment->file_name ?? basename($storageBaseUrl.''.$attachment->file_path));
 
                         // Free memory used by the file content
                         unset($fileContent);
                         gc_collect_cycles();
                     } else {
-                        Log::warning("Unable to read file from: {$storageBaseUrl}/{$attachment->file_path}");
+                        Log::warning("Unable to read file from: {$storageBaseUrl}{$attachment->file_path}");
                     }
                 } catch (\Exception $e) {
                     // Log any exceptions during attachment handling
-                    Log::error("Attachment error [{$storageBaseUrl}/{$attachment->file_path}]: ".$e->getMessage());
+                    Log::error("Attachment error [{$storageBaseUrl}{$attachment->file_path}]: ".$e->getMessage());
                 }
             }
         });

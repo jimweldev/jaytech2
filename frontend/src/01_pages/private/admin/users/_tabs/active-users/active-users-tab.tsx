@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   FaPenToSquare,
-  FaRegCircleXmark,
+  // FaRegCircleXmark,
   // FaShield,
   FaTrash,
 } from 'react-icons/fa6';
@@ -52,7 +52,7 @@ const ActiveUsersTab = () => {
     { label: 'ID', column: 'id', className: 'w-[80px]' },
     { label: 'Name', column: 'first_name,last_name' },
     { label: 'Admin' },
-    { label: 'Roles' },
+    // { label: 'Roles' },
     { label: 'Created At', column: 'created_at', className: 'w-[200px]' },
     { label: 'Actions', className: 'w-[100px]' },
   ];
@@ -114,7 +114,7 @@ const ActiveUsersTab = () => {
                         {user.is_admin ? 'Admin' : 'User'}
                       </Badge>
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       <div className="flex flex-wrap items-center gap-1">
                         {user?.rbac_user_roles?.length === 0 ? (
                           <Badge variant="outline">
@@ -131,7 +131,7 @@ const ActiveUsersTab = () => {
                           </div>
                         )}
                       </div>
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
                       {getDateTimezone(user.created_at, 'date_time')}
                     </TableCell>

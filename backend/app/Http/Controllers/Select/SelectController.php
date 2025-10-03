@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Select;
 
 use App\Helpers\QueryHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Core\User;
 use App\Models\Core\RbacPermission;
 use App\Models\Core\RbacRole;
+use App\Models\Core\User;
+use App\Models\Mail\MailTemplate;
 use App\Models\Service\Service;
 use App\Models\Service\ServiceBrandCategory;
 use App\Models\Service\ServiceItem;
@@ -283,6 +284,46 @@ class SelectController extends Controller {
                 $search = $request->input('search');
                 $query->where(function ($query) use ($search) {
                     $query->where('id', 'LIKE', '%'.$search.'%');
+                });
+            }
+
+            $total = $query->count();
+
+            $limit = $request->input('limit', 10);
+            $page = $request->input('page', 1);
+            QueryHelper::applyLimitAndOffset($query, $limit, $page);
+
+            $records = $query->get();
+
+            return response()->json([
+                'records' => $records,
+                'meta' => [
+                    'total_records' => $total,
+                    'total_pages' => ceil($total / $limit),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred.',
+                'error' => $e->getMessage(),
+            ], 400);
+        }
+    }
+
+    public function getSelectMailTemplates(Request $request) {
+        $queryParams = $request->all();
+
+        try {
+            $query = MailTemplate::query();
+
+            $type = 'paginate';
+            QueryHelper::apply($query, $queryParams, $type);
+
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $query->where(function ($query) use ($search) {
+                    $query->where('id', 'LIKE', '%'.$search.'%')
+                        ->orWhere('label', 'LIKE', '%'.$search.'%');
                 });
             }
 

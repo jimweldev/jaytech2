@@ -87,8 +87,6 @@ class ServiceItemController extends Controller {
      * Store a newly created record in storage.
      */
     public function store(Request $request) {
-        DB::beginTransaction();
-
         try {
             $filePath = null;
 
@@ -97,7 +95,7 @@ class ServiceItemController extends Controller {
                 $extension = $thumbnail->getClientOriginalExtension();
                 $uniqueName = Str::uuid().'.'.$extension;
 
-                $filePath = StorageHelper::uploadFileAs($thumbnail, 'thumbnails', $uniqueName);
+                $filePath = StorageHelper::uploadFileAs($thumbnail, 'items', $uniqueName);
 
                 if (!$filePath) {
                     return response()->json([
@@ -106,21 +104,16 @@ class ServiceItemController extends Controller {
                 }
             }
 
-            // ✅ Create item first
-            $item = ServiceItem::create([
-                'service_brand_category_id' => $request->service_brand_category_id,
+            $record = ServiceItem::create([
                 'label' => $request->label,
                 'thumbnail_path' => $filePath,
             ]);
 
-            DB::commit();
-
             return response()->json([
+                'record' => $record,
                 'message' => 'Item created successfully',
             ], 201);
         } catch (\Exception $e) {
-            DB::rollBack();
-
             return response()->json([
                 'message' => 'An error occurred',
                 'error' => $e->getMessage(),

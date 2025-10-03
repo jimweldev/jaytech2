@@ -2,9 +2,9 @@
 
 namespace App\Models\Service;
 
+use App\Models\Core\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Core\User;
 
 class ServiceBookingDropPointTechnician extends Model {
     use SoftDeletes;

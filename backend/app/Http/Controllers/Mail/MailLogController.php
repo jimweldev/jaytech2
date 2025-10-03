@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mail;
 use App\Helpers\QueryHelper;
 use App\Helpers\StorageHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Core\User;
 use App\Models\Mail\MailLog;
 use App\Models\Mail\MailLogAttachment;
 use Illuminate\Http\Request;
@@ -126,42 +127,61 @@ class MailLogController extends Controller {
         DB::beginTransaction();
 
         try {
-            // create a new record
-            $record = MailLog::create(array_filter($request->all(), function ($value) {
-                return $value !== null && $value !== '';
-            }));
+            $mailTemplateId = $request->input('mail_template_id');
+            $subject = $request->input('subject');
+            $contentData = $request->input('content_data');
 
-            // Attach the attachments to the record
-            if ($request->has('attachments')) {
-                $attachments = $request->file('attachments');
-                foreach ($attachments as $attachment) {
-                    $extension = $attachment->getClientOriginalExtension();
-                    $uniqueName = Str::uuid().'.'.$extension;
+            // fetch all users
+            $users = User::all();
 
-                    $filePath = StorageHelper::uploadFileAs($attachment, 'mail_log_attachments', $uniqueName);
+            $createdLogs = [];
 
-                    if (!$filePath) {
-                        return response()->json([
-                            'message' => "Failed to upload {$attachment->getClientOriginalName()}. File size too large.",
-                        ], 400);
+            foreach ($users as $user) {
+                // create mail log per user
+                $record = MailLog::create([
+                    'mail_template_id' => $mailTemplateId,
+                    'subject' => $subject,
+                    'content_data' => $contentData,
+                    'recipient_email' => $user->email,
+                ]);
+
+                // Attach the attachments (if any)
+                if ($request->has('attachments')) {
+                    $attachments = $request->file('attachments');
+                    foreach ($attachments as $attachment) {
+                        $extension = $attachment->getClientOriginalExtension();
+                        $uniqueName = Str::uuid().'.'.$extension;
+
+                        $filePath = StorageHelper::uploadFileAs($attachment, 'mail_log_attachments', $uniqueName);
+
+                        if (!$filePath) {
+                            DB::rollBack();
+
+                            return response()->json([
+                                'message' => "Failed to upload {$attachment->getClientOriginalName()}. File size too large.",
+                            ], 400);
+                        }
+
+                        MailLogAttachment::create([
+                            'mail_log_id' => $record->id,
+                            'file_name' => $attachment->getClientOriginalName(),
+                            'file_path' => $filePath,
+                        ]);
                     }
-
-                    MailLogAttachment::create([
-                        'mail_log_id' => $record->id,
-                        'file_name' => $attachment->getClientOriginalName(),
-                        'file_path' => $filePath,
-                    ]);
                 }
+
+                $createdLogs[] = $record;
             }
 
             DB::commit();
 
-            // Return the created record
-            return response()->json($record, 201);
+            return response()->json([
+                'message' => 'Mail logs created successfully.',
+                'records' => $createdLogs,
+            ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
 
-            // Handle exceptions and return an error response
             return response()->json([
                 'message' => 'An error occurred.',
                 'error' => $e->getMessage(),
