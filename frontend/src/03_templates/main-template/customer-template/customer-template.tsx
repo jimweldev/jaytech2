@@ -209,7 +209,7 @@ const CustomerTemplate = ({ children }: CustomerTemplateProps) => {
           <div className="bg-card">3</div>
         </div>
       </div> */}
-        <div className="customer-container p-layout @container/main">
+        <div className="@container/main">
           {/* <Card>
           <CardBody>
             <CardTitle className="mb-2">Categories</CardTitle>

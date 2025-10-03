@@ -20,8 +20,11 @@ import UsersPage from './01_pages/private/admin/users/users-page';
 import BagPage from './01_pages/private/customer/bag/bag-page';
 import BagTab from './01_pages/private/customer/bag/bag-tabs/bag-tab';
 import CartPage from './01_pages/private/customer/cart/cart-page';
-import CheckoutPage from './01_pages/private/customer/home/_components/checkout-page';
-import ViewServicePage from './01_pages/private/customer/home/_components/view-service-page';
+import CarBrandPage from './01_pages/private/customer/home/_components/services/car-upgrade/car-brands-page';
+import CheckoutPage from './01_pages/private/customer/home/_components/services/car-upgrade/checkout/checkout-page';
+import ViewServicePage from './01_pages/private/customer/home/_components/services/car-upgrade/view-service-page';
+import ComputerBrandPage from './01_pages/private/customer/home/_components/services/computer-upgrade/computer-brands-page';
+import RepairBrandPage from './01_pages/private/customer/home/_components/services/repair/repair-brands-page';
 import CustomerHomePage from './01_pages/private/customer/home/home-page';
 import DataTableGridPage from './01_pages/private/examples/data-table/data-table-grid-page';
 import DataTableListGridPage from './01_pages/private/examples/data-table/data-table-list-grid-page';
@@ -65,13 +68,39 @@ const App = () => {
           element: <h1>Services</h1>,
         },
         {
-          path: 'service/:id',
-          element: <ViewServicePage />,
+          path: 'service/car-upgrade',
+          children: [
+            {
+              path: '',
+              element: <CarBrandPage />,
+            },
+            {
+              path: 'brand/:brand',
+              element: <ViewServicePage />,
+            },
+          ],
         },
+
         {
-          path: 'service/checkout/:id',
-          element: <CheckoutPage />,
+          path: 'service/computer-upgrade',
+          children: [
+            {
+              path: '',
+              element: <ComputerBrandPage />,
+            },
+          ],
         },
+
+        {
+          path: 'service/repair',
+          children: [
+            {
+              path: '',
+              element: <RepairBrandPage />,
+            },
+          ],
+        },
+
         {
           path: 'cart',
           children: [
@@ -81,7 +110,7 @@ const App = () => {
             },
             {
               path: 'checkout',
-              element: <CheckboxPage />,
+              element: <CheckoutPage />,
             },
           ],
         },
@@ -194,18 +223,24 @@ const App = () => {
                   {
                     path: 'services',
                     element: <ServicesPage />,
-                  },
-                  {
-                    path: 'brands',
-                    element: <BrandsPage />,
-                  },
-                  {
-                    path: 'models',
-                    element: <ModelsPage />,
-                  },
-                  {
-                    path: 'items',
-                    element: <ItemsPage />,
+                    children: [
+                      {
+                        index: true,
+                        element: <Navigate to="services" replace />,
+                      },
+                      {
+                        path: 'services',
+                        element: <ServicesTab />,
+                      },
+                      {
+                        path: 'service-products',
+                        element: <ServiceProductsTab />,
+                      },
+                      {
+                        path: 'service-product-variants',
+                        element: <ServiceProductVariantsTab />,
+                      },
+                    ],
                   },
                   {
                     path: 'drop-points',
