@@ -19,7 +19,7 @@ import useTanstackPaginateQuery from '@/hooks/tanstack/use-tanstack-paginate-que
 import { getDateTimezone } from '@/lib/date/get-date-timezone';
 import CreateModelDialog from './_dialogs/create-model-dialog';
 import DeleteModelDialog from './_dialogs/delete-model-dialog';
-import ManageImtesModelDialog from './_dialogs/manage-items-model/manage-model-items-dialog';
+import ManageImtesModelDialog from './_dialogs/manage-model-items-model/manage-model-items-dialog';
 import UpdateModelDialog from './_dialogs/update-model-dialog';
 
 const ModelsPage = () => {

@@ -79,7 +79,7 @@ const ManageImtesModelDialog = ({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent size="5xl" autoFocus={true}>
           <DialogHeader>
-            <DialogTitle>Manage Model</DialogTitle>
+            <DialogTitle>Manage Model Items</DialogTitle>
           </DialogHeader>
 
           <DialogBody>

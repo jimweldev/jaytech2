@@ -14,6 +14,8 @@ use App\Http\Controllers\Service\ServiceBrandModelController;
 use App\Http\Controllers\Service\ServiceBrandModelItemController;
 use App\Http\Controllers\Service\ServiceController;
 use App\Http\Controllers\Service\ServiceItemController;
+use App\Http\Controllers\Service\ServiceBookingDropPointController;
+use App\Http\Controllers\Service\ServiceBookingDropPointTechnicianController;
 use App\Http\Controllers\System\SystemGlobalDropdownController;
 use App\Http\Controllers\System\SystemSettingController;
 use App\Http\Controllers\User\UserImageController;
@@ -98,6 +100,12 @@ Route::middleware('auth.middleware')->group(function () {
     // service brand models
     Route::resource('/services/brands/models', ServiceBrandModelController::class);
 
+    // service drop point technicians
+    Route::resource('/services/drop-points/technicians', ServiceBookingDropPointTechnicianController::class);
+
+    // service drop points
+    Route::resource('/services/drop-points', ServiceBookingDropPointController::class);
+
     // service brands
     Route::resource('/services/brands', ServiceBrandController::class);
 
@@ -109,6 +117,7 @@ Route::middleware('auth.middleware')->group(function () {
 
     // ==============
     // === SELECTS
+    Route::get('/select/users', [SelectController::class, 'getSelectUsers']);
     Route::get('/select/roles', [SelectController::class, 'getSelectRoles']);
     Route::get('/select/permissions', [SelectController::class, 'getSelectPermissions']);
     Route::get('/select/global-dropdowns', [SelectController::class, 'getSelectSystemGlobalDropdowns']);
