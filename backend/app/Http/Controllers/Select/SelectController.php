@@ -362,7 +362,8 @@ class SelectController extends Controller {
                     ->select('service_booking_drop_point_technicians.*')
                     ->leftJoin('service_booking_drop_points', 'service_booking_drop_point_technicians.service_booking_drop_point_id', '=', 'service_booking_drop_points.id')
                     ->leftJoin('users', 'service_booking_drop_point_technicians.technician_id', '=', 'users.id')
-                    ->orderBy('service_booking_drop_points.location', 'asc');
+                    ->orderBy('service_booking_drop_points.location', 'asc')
+                    ->orderBy('users.first_name', 'asc');
 
             $type = 'paginate';
             QueryHelper::apply($query, $queryParams, $type);

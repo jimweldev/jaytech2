@@ -38,7 +38,7 @@ const DropPointTechnicianSelect = ({ serviceId, ...props }: any) => {
 
       const options = response.data.records.map(
         (dropPointTechnician: ServiceBookingDropPointTechnician) => ({
-          value: dropPointTechnician.technician_id,
+          value: dropPointTechnician.id,
           label: dropPointTechnician.service_booking_drop_point?.location,
           technician: formatName(dropPointTechnician.technician, 'semifull'),
         }),
