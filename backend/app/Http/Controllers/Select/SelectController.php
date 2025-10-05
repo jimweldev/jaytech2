@@ -11,6 +11,7 @@ use App\Models\Mail\MailTemplate;
 use App\Models\Service\Service;
 use App\Models\Service\ServiceBrandCategory;
 use App\Models\Service\ServiceItem;
+use App\Models\Service\ServiceBookingDropPointTechnician;
 use App\Models\System\SystemGlobalDropdown;
 use Illuminate\Http\Request;
 
@@ -324,6 +325,59 @@ class SelectController extends Controller {
                 $query->where(function ($query) use ($search) {
                     $query->where('id', 'LIKE', '%'.$search.'%')
                         ->orWhere('label', 'LIKE', '%'.$search.'%');
+                });
+            }
+
+            $total = $query->count();
+
+            $limit = $request->input('limit', 10);
+            $page = $request->input('page', 1);
+            QueryHelper::applyLimitAndOffset($query, $limit, $page);
+
+            $records = $query->get();
+
+            return response()->json([
+                'records' => $records,
+                'meta' => [
+                    'total_records' => $total,
+                    'total_pages' => ceil($total / $limit),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred.',
+                'error' => $e->getMessage(),
+            ], 400);
+        }
+    }
+    
+    public function getSelectDropPointechnicians(Request $request) {
+        $queryParams = $request->all();
+
+        try {
+            $query = ServiceBookingDropPointTechnician::with([
+                        'service_booking_drop_point',
+                        'technician',
+                    ])
+                    ->select('service_booking_drop_point_technicians.*')
+                    ->leftJoin('service_booking_drop_points', 'service_booking_drop_point_technicians.service_booking_drop_point_id', '=', 'service_booking_drop_points.id')
+                    ->leftJoin('users', 'service_booking_drop_point_technicians.technician_id', '=', 'users.id')
+                    ->orderBy('service_booking_drop_points.location', 'asc');
+
+            $type = 'paginate';
+            QueryHelper::apply($query, $queryParams, $type);
+
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $query->where(function ($query) use ($search) {
+                    $query->where('service_booking_drop_points.id', 'LIKE', '%'.$search.'%')
+                        ->orWhereHas('technician', function ($q) use ($search) {
+                            $q->where('first_name', 'LIKE', '%'.$search.'%')
+                                ->orWhere('last_name', 'LIKE', '%'.$search.'%');
+                        })
+                        ->orWhereHas('service_booking_drop_point', function ($q) use ($search) {
+                            $q->where('location', 'LIKE', '%'.$search.'%');
+                        });
                 });
             }
 

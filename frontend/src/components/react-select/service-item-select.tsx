@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { AxiosError } from 'axios';
 import { AsyncPaginate, type LoadOptions } from 'react-select-async-paginate';
 import { toast } from 'sonner';

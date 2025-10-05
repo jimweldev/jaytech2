@@ -1,4 +1,5 @@
 import PaymentButton from '@/components/button/payment/payment-button';
+import DropPointTechnicianSelect from '@/components/react-select/drop-point-technician-select';
 import PageHeader from '@/components/typography/page-header';
 
 const HomePage = () => {
@@ -14,6 +15,8 @@ const HomePage = () => {
           details: 'iPhone 16 | Screen Replacement',
         }}
       />
+
+      <DropPointTechnicianSelect serviceId="2" />
     </div>
   );
 };
