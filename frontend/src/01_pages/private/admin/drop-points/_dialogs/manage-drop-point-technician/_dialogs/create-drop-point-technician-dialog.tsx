@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import useServiceBookingDropPointStore from '@/05_stores/service/service-booking-drop-point';
+import useServiceBookingDropPointStore from '@/05_stores/service/service-booking-drop-point-store';
 import { mainInstance } from '@/07_instances/main-instance';
 import ServiceSelect from '@/components/react-select/service-select';
 import TechnicianSelect from '@/components/react-select/technician-select';

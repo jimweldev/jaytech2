@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
 import type { ServiceBookingDropPoint } from '@/04_types/service/service-booking-drop-point';
-import useServiceBookingDropPointStore from '@/05_stores/service/service-booking-drop-point';
+import useServiceBookingDropPointStore from '@/05_stores/service/service-booking-drop-point-store';
 import DataTable, {
   type DataTableColumn,
 } from '@/components/data-table/data-table';

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CircleAlert } from 'lucide-react';
 import { toast } from 'sonner';
-import useServiceBookingDropPointStore from '@/05_stores/service/service-booking-drop-point';
+import useServiceBookingDropPointStore from '@/05_stores/service/service-booking-drop-point-store';
 import { mainInstance } from '@/07_instances/main-instance';
 import { Button } from '@/components/ui/button';
 import {
