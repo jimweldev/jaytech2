@@ -124,6 +124,7 @@ Route::middleware('auth.middleware')->group(function () {
     Route::get('/select/services', [SelectController::class, 'getSelectServices']);
     Route::get('/select/service-brand-categories', [SelectController::class, 'getSelectServiceBrandCategories']);
     Route::get('/select/service-items', [SelectController::class, 'getSelectServiceItems']);
+    Route::get('/select/service-brand-items', [SelectController::class, 'getSelectServicesByCategoryAndModel']);
 
     // ==============
     // === SETTINGS

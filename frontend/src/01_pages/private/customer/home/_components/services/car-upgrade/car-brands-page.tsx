@@ -9,25 +9,11 @@ const CarBrandPage = () => {
     const modelsRef = useRef<HTMLDivElement | null>(null);
 
     // Tanstack query hook for pagination
-    const tasksPagination = useTanstackPaginateQuery<ServiceBrand>({
+    const brandsPagination = useTanstackPaginateQuery<ServiceBrand>({
         endpoint: '/services/brands',
         defaultSort: 'id',
+        params: 'limit=1000',
     });
-
-    console.log(selectedBrand)
-
-    const carBrands = [
-        { name: "Toyota", image: "https://global.toyota/pages/global_toyota/mobility/toyota-brand/emblem_001.jpg", models: ["Camry", "Corolla", "RAV4", "Highlander", "Sienna"] },
-        { name: "Honda", image: "https://live.staticflickr.com/3453/3747525628_5f0fab0ba0_b.jpg", models: ["Civic", "Accord", "CR-V"] },
-        { name: "Ford", image: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Ford_logo_flat.svg", models: ["F-150", "Mustang", "Explorer"] },
-        { name: "Chevrolet", image: "https://logos-world.net/wp-content/uploads/2021/03/Chevrolet-Logo.png", models: ["Silverado", "Malibu", "Equinox"] },
-        { name: "BMW", image: "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg", models: ["3 Series", "X5", "i8"] },
-        { name: "Mercedes", image: "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg", models: ["C-Class", "E-Class", "GLE"] },
-        { name: "Audi", image: "https://di-uploads-pod3.dealerinspire.com/vindeversautohausofsylvania/uploads/2018/10/Audi-Logo-Banner.png", models: ["A4", "Q5", "A6"] },
-        { name: "Volkswagen", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Volkswagen_logo_2019.svg/2048px-Volkswagen_logo_2019.svg.png", models: ["Golf", "Passat", "Tiguan"] },
-    ];
-
-    // const brand = carBrands.find((b) => b.name === selectedBrand);
 
     // scroll to models when brand changes
     useEffect(() => {
@@ -70,7 +56,6 @@ const CarBrandPage = () => {
                     <div className="mb-6 px-4">
                         <Input
                             className="w-full max-w-md mx-auto"
-
                             type="text"
                             placeholder="Search brand..."
                             value={searchTerm}
@@ -78,74 +63,44 @@ const CarBrandPage = () => {
                         />
                     </div>
 
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                        {tasksPagination.data?.records ? (
-                            tasksPagination.data.records.map((item) => (
+                    {/* Brand List */}
+                    {brandsPagination.data?.records?.length ? (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                            {brandsPagination.data.records.map((item) => (
                                 <button
                                     key={item.label}
                                     onClick={() => setSelectedBrand(item)}
-                                    className={`group bg-white rounded-xl border shadow-sm p-6 flex flex-col items-center transition-all duration-300 cursor-pointer ${selectedBrand === item.label
-                                        ? "border-blue-500 shadow-md"
-                                        : "border-gray-200 hover:border-blue-500 hover:shadow-md"
+                                    className={`group bg-white rounded-xl border shadow-sm p-6 flex flex-col items-center transition-all duration-300 cursor-pointer ${selectedBrand.label === item.label
+                                            ? "border-blue-500 shadow-md"
+                                            : "border-gray-200 hover:border-blue-500 hover:shadow-md"
                                         }`}
                                 >
                                     <div className="w-24 h-14 flex items-center justify-center mb-3">
                                         <img
-                                            src={item.thumbnail_path}
+                                            src={item.thumbnail_path || "https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-network-placeholder-png-image_3416659.jpg"}
                                             alt={item.label}
                                             className="object-contain max-h-full transition-transform duration-300 group-hover:scale-105"
                                         />
                                     </div>
                                     <h3
-                                        className={`text-lg font-semibold ${selectedBrand === item.label
-                                            ? "text-blue-600"
-                                            : "text-gray-800 group-hover:text-blue-600"
+                                        className={`text-lg font-semibold ${selectedBrand.label === item.label
+                                                ? "text-blue-600"
+                                                : "text-gray-800 group-hover:text-blue-600"
                                             }`}
                                     >
                                         {item.label}
                                     </h3>
                                 </button>
-
-                            ))
-                        ) : null}
-
-
-                        {/* {carBrands
-                            .filter(({ name }) =>
-                                name.toLowerCase().includes(searchTerm.toLowerCase())
-                            )
-                            .map(({ name, image }) => (
-                                <button
-                                    key={name}
-                                    onClick={() => setSelectedBrand(name)}
-                                    className={`group bg-white rounded-xl border shadow-sm p-6 flex flex-col items-center transition-all duration-300 cursor-pointer ${selectedBrand === name
-                                        ? "border-blue-500 shadow-md"
-                                        : "border-gray-200 hover:border-blue-500 hover:shadow-md"
-                                        }`}
-                                >
-                                    <div className="w-24 h-14 flex items-center justify-center mb-3">
-                                        <img
-                                            src={image}
-                                            alt={name}
-                                            className="object-contain max-h-full transition-transform duration-300 group-hover:scale-105"
-                                        />
-                                    </div>
-                                    <h3
-                                        className={`text-lg font-semibold ${selectedBrand === name
-                                            ? "text-blue-600"
-                                            : "text-gray-800 group-hover:text-blue-600"
-                                            }`}
-                                    >
-                                        {name}
-                                    </h3>
-                                </button>
-                            ))} */}
-                    </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-gray-500 text-sm mt-6">No car brands found.</p>
+                    )}
                 </div>
             </div>
 
             {/* Car Models */}
-            {selectedBrand && (
+            {selectedBrand.models?.length > 0 ? (
                 <div ref={modelsRef} className="container mx-auto py-12 px-2">
                     <div className="max-w-6xl mx-auto text-center">
                         <h2 className="text-3xl sm:text-4xl font-extrabold px-4 tracking-tight text-gray-900 mb-4">
@@ -164,27 +119,34 @@ const CarBrandPage = () => {
                         </div>
 
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                            {/* {selectedBrand.services.map((model: any) => (
-                                    <Link
-                                        key={model}
-                                        to={`/cart/checkout`}
-                                        className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 p-4 flex flex-col items-center"
-                                    >
-                                        <span className="text-lg font-semibold text-gray-800">{model}</span>
-                                    </Link>
-                                ))} */}
-
-                                   {/* <Link
-                                        key={model}
-                                        to={`/cart/checkout`}
-                                        className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 p-4 flex flex-col items-center"
-                                    >
-                                        <span className="text-lg font-semibold text-gray-800">{model}</span>
-                                    </Link> */}
+                            {selectedBrand.models.map((model: any) => (
+                                <Link
+                                    key={model.id}
+                                    to={`/service/car-upgrade/${selectedBrand.id}/${model.id}`}
+                                    className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 p-4 flex flex-col items-center"
+                                >
+                                    <img
+                                        src={model.thumbnail_path || "https://www.vhv.rs/dpng/d/488-4888678_transparent-car-png-icon-sedan-car-icon-png.png"} // fallback if no image
+                                        alt={model.label}
+                                        className="w-24 h-24 object-contain mb-3"
+                                    />
+                                    <span className="text-lg font-semibold text-gray-800">
+                                        {model.label}
+                                    </span>
+                                </Link>
+                            ))}
                         </div>
+
                     </div>
                 </div>
+            ) : (
+                <div ref={modelsRef} className="container mx-auto py-12 px-2 text-center">
+                    <p className="text-muted-foreground">
+                        No models available for this brand.
+                    </p>
+                </div>
             )}
+
         </>
     );
 };

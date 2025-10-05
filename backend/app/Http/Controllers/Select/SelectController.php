@@ -10,6 +10,7 @@ use App\Models\Core\RbacRole;
 use App\Models\Service\Service;
 use App\Models\Service\ServiceBrandCategory;
 use App\Models\Service\ServiceItem;
+use App\Models\Service\ServiceBrandModelItem;
 use App\Models\System\SystemGlobalDropdown;
 use Illuminate\Http\Request;
 
@@ -275,6 +276,45 @@ class SelectController extends Controller {
 
         try {
             $query = ServiceItem::query();
+
+            $type = 'paginate';
+            QueryHelper::apply($query, $queryParams, $type);
+
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $query->where(function ($query) use ($search) {
+                    $query->where('id', 'LIKE', '%'.$search.'%');
+                });
+            }
+
+            $total = $query->count();
+
+            $limit = $request->input('limit', 10);
+            $page = $request->input('page', 1);
+            QueryHelper::applyLimitAndOffset($query, $limit, $page);
+
+            $records = $query->get();
+
+            return response()->json([
+                'records' => $records,
+                'meta' => [
+                    'total_records' => $total,
+                    'total_pages' => ceil($total / $limit),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred.',
+                'error' => $e->getMessage(),
+            ], 400);
+        }
+    }
+
+    public function getSelectServicesByCategoryAndModel(Request $request) {
+        $queryParams = $request->all();
+
+        try {
+            $query = ServiceBrandModelItem::with('service_item');
 
             $type = 'paginate';
             QueryHelper::apply($query, $queryParams, $type);

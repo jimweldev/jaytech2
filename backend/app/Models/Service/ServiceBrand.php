@@ -24,4 +24,15 @@ class ServiceBrand extends Model {
     public function service_brand_categories() {
         return $this->hasMany(ServiceBrandCategory::class);
     }
+
+    public function models() {
+        return $this->hasManyThrough(
+            ServiceBrandModel::class,
+            ServiceBrandCategory::class,
+            'service_brand_id',
+            'service_brand_category_id',
+            'id',
+            'id'
+        );
+    }
 }
