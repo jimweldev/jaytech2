@@ -47,6 +47,7 @@ const ModelsPage = () => {
     { label: 'Brand' },
     { label: 'Model', column: 'label' },
     { label: 'Service' },
+    { label: 'Checkup Price' },
     { label: 'Created At', column: 'created_at', className: 'w-[200px]' },
     { label: 'Actions', className: 'w-[100px]' },
   ];
@@ -142,6 +143,9 @@ const ModelsPage = () => {
                       </Badge>
                     </TableCell>
 
+                    <TableCell>
+                      {model.checkup_price ? model.checkup_price : 'N/A'}
+                    </TableCell>
                     <TableCell>
                       {getDateTimezone(model.created_at, 'date_time')}
                     </TableCell>

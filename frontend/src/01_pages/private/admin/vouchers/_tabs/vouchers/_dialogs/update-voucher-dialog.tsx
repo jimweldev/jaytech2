@@ -3,10 +3,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import useServiceBrandModelItemStore from '@/05_stores/service/service-brand-model-item-store';
-import useServiceBrandModelStore from '@/05_stores/service/service-brand-model-store';
+import useServiceVoucherStore from '@/05_stores/service/service-voucher-store';
 import { mainInstance } from '@/07_instances/main-instance';
-import ServiceItemSelect from '@/components/react-select/service-item-select';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -25,73 +23,74 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 
 // Zod schema to validate the form input
-const FormSchema = z.object({
-  service_item: z.object(
-    {
-      label: z.string().min(1, {
-        message: 'Required',
-      }),
-      value: z.number().min(1, {
-        message: 'Required',
-      }),
-    },
-    {
+const FormSchema = z
+  .object({
+    code: z.string().min(1, {
       message: 'Required',
-    },
-  ),
-  price: z
-    .string()
-    .min(1, { message: 'Required' })
-    .refine(val => /^[0-9]+(\.[0-9]+)?$/.test(val), {
-      message: 'Must be a valid number',
     }),
-  details: z.string(),
-});
+    amount: z
+      .union([z.string(), z.number()])
+      .refine(val => /^[0-9]+(\.[0-9]+)?$/.test(String(val)), {
+        message: 'Must be a valid number',
+      }),
+    issue_date: z.string().min(1, {
+      message: 'Required',
+    }),
+    expiry_date: z.string().min(1, {
+      message: 'Required',
+    }),
+  })
+  .refine(
+    data => {
+      const issue = new Date(data.issue_date);
+      const expiry = new Date(data.expiry_date);
+      return expiry > issue;
+    },
+    {
+      message: 'Expiry date must be greater than issue date',
+      path: ['expiry_date'],
+    },
+  );
 
 // Component Props
-type UpdateServiceDialogProps = {
+type UpdateVoucherDialogProps = {
   open: boolean;
   setOpen: (value: boolean) => void;
   refetch: () => void;
 };
 
-const UpdateServiceDialog = ({
+const UpdateVoucherDialog = ({
   open,
   setOpen,
   refetch,
-}: UpdateServiceDialogProps) => {
+}: UpdateVoucherDialogProps) => {
   // Access store values
-  const { selectedServiceBrandModel } = useServiceBrandModelStore();
-  const { selectedServiceBrandModelItem } = useServiceBrandModelItemStore();
+  const { selectedServiceVoucher } = useServiceVoucherStore();
 
   // Initialize form with Zod resolver and default values
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      service_item: undefined,
-      price: '',
-      details: '',
+      code: '',
+      amount: '',
+      issue_date: '',
+      expiry_date: '',
     },
   });
 
   // Populate form with selected items's data
   useEffect(() => {
-    if (selectedServiceBrandModelItem) {
+    if (selectedServiceVoucher) {
       form.reset({
-        service_item: selectedServiceBrandModelItem.service_item
-          ? {
-              label: selectedServiceBrandModelItem.service_item.label,
-              value: selectedServiceBrandModelItem.service_item.id,
-            }
-          : undefined,
-        price: String(selectedServiceBrandModelItem.price),
-        details: selectedServiceBrandModelItem.details || '',
+        code: selectedServiceVoucher.code || '',
+        amount: selectedServiceVoucher.amount || '',
+        issue_date: selectedServiceVoucher.issue_date || '',
+        expiry_date: selectedServiceVoucher.expiry_date || '',
       });
     }
-  }, [selectedServiceBrandModelItem, form]);
+  }, [selectedServiceVoucher, form]);
 
   // Track loading state for submit button
   const [isLoadingUpdateItem, setIsLoadingUpdateItem] =
@@ -99,18 +98,13 @@ const UpdateServiceDialog = ({
 
   // Handle form submission
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    const newData = {
-      ...data,
-      service_item_id: data.service_item.value,
-    };
-
     setIsLoadingUpdateItem(true);
 
     // Send PATCH request and show toast notifications
     toast.promise(
       mainInstance.patch(
-        `/services/brands/models/items/${selectedServiceBrandModelItem?.id}`,
-        newData,
+        `/services/vouchers/${selectedServiceVoucher?.id}`,
+        data,
       ),
       {
         loading: 'Loading...',
@@ -142,41 +136,19 @@ const UpdateServiceDialog = ({
           <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
             {/* Dialog header */}
             <DialogHeader>
-              <DialogTitle>Update Model Item</DialogTitle>
+              <DialogTitle>Update System Setting</DialogTitle>
             </DialogHeader>
 
             {/* Dialog body */}
             <DialogBody>
               <div className="grid grid-cols-12 gap-3">
+                {/* Code field */}
                 <FormField
                   control={form.control}
-                  name="service_item"
-                  render={({ field, fieldState }) => (
-                    <FormItem className="col-span-12">
-                      <FormLabel>Service item</FormLabel>
-                      <FormControl>
-                        <ServiceItemSelect
-                          serviceBrandCategoryId={
-                            selectedServiceBrandModel?.service_brand_category_id
-                          }
-                          className={`${fieldState.invalid ? 'invalid' : ''}`}
-                          placeholder="Select service item"
-                          value={field.value}
-                          onChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Name field */}
-                <FormField
-                  control={form.control}
-                  name="price"
+                  name="code"
                   render={({ field }) => (
                     <FormItem className="col-span-12">
-                      <FormLabel>Price</FormLabel>
+                      <FormLabel>Code</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -185,15 +157,45 @@ const UpdateServiceDialog = ({
                   )}
                 />
 
-                {/* Details field */}
+                {/* Amount field */}
                 <FormField
                   control={form.control}
-                  name="details"
+                  name="amount"
                   render={({ field }) => (
                     <FormItem className="col-span-12">
-                      <FormLabel>Details</FormLabel>
+                      <FormLabel>Amount</FormLabel>
                       <FormControl>
-                        <Textarea {...field} />
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Issue_date field */}
+                <FormField
+                  control={form.control}
+                  name="issue_date"
+                  render={({ field }) => (
+                    <FormItem className="col-span-12">
+                      <FormLabel>Issue Date</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="date" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Expiry_date field */}
+                <FormField
+                  control={form.control}
+                  name="expiry_date"
+                  render={({ field }) => (
+                    <FormItem className="col-span-12">
+                      <FormLabel>Expiry Date</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="date" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -218,4 +220,4 @@ const UpdateServiceDialog = ({
   );
 };
 
-export default UpdateServiceDialog;
+export default UpdateVoucherDialog;

@@ -112,7 +112,7 @@ const UpdateSystemSettingDialog = ({
           <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
             {/* Dialog header */}
             <DialogHeader>
-              <DialogTitle>Update SystemSetting</DialogTitle>
+              <DialogTitle>Update System Setting</DialogTitle>
             </DialogHeader>
 
             {/* Dialog body */}

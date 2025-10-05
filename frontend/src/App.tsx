@@ -17,6 +17,8 @@ import PermissionsTab from './01_pages/private/admin/users/_tabs/rbac/_tabs/perm
 import RolesTab from './01_pages/private/admin/users/_tabs/rbac/_tabs/roles/roles-tab';
 import RbacTab from './01_pages/private/admin/users/_tabs/rbac/rbac-tab';
 import UsersPage from './01_pages/private/admin/users/users-page';
+import ClaimedVouchersTab from './01_pages/private/admin/vouchers/_tabs/claimed-vouchers/claimed-vouchers-tab';
+import VouchersTab from './01_pages/private/admin/vouchers/_tabs/vouchers/vouchers-tab';
 import VouchersPage from './01_pages/private/admin/vouchers/vouchers-page';
 import BagPage from './01_pages/private/customer/bag/bag-page';
 import BagTab from './01_pages/private/customer/bag/bag-tabs/bag-tab';
@@ -251,11 +253,11 @@ const App = () => {
                       },
                       {
                         path: 'vouchers',
-                        element: <VouchersPage />,
+                        element: <VouchersTab />,
                       },
                       {
                         path: 'claimed-vouchers',
-                        element: <VouchersPage />,
+                        element: <ClaimedVouchersTab />,
                       },
                     ],
                   },

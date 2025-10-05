@@ -13,6 +13,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('service_voucher_id')->constrained('service_vouchers')->onDelete('cascade');
             $table->foreignId('customer_id')->constrained('users')->onDelete('cascade');
+            $table->decimal('amount', 10, 2);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });

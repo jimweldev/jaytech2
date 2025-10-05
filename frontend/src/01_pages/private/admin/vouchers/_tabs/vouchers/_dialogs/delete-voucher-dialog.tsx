@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CircleAlert } from 'lucide-react';
 import { toast } from 'sonner';
-import useSystemSettingStore from '@/05_stores/system/system-setting-store';
+import useServiceVoucherStore from '@/05_stores/service/service-voucher-store';
 import { mainInstance } from '@/07_instances/main-instance';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,19 +12,19 @@ import {
 } from '@/components/ui/dialog';
 
 // Component Props
-type DeleteSystemSettingDialogProps = {
+type DeleteVoucherDialogProps = {
   open: boolean;
   setOpen: (value: boolean) => void;
   refetch: () => void;
 };
 
-const DeleteSystemSettingDialog = ({
+const DeleteVoucherDialog = ({
   open,
   setOpen,
   refetch,
-}: DeleteSystemSettingDialogProps) => {
+}: DeleteVoucherDialogProps) => {
   // Access store values
-  const { selectedSystemSetting } = useSystemSettingStore();
+  const { selectedServiceVoucher } = useServiceVoucherStore();
 
   // Track loading state for submit button
   const [isLoadingDeleteItem, setIsLoadingDeleteItem] =
@@ -37,7 +37,7 @@ const DeleteSystemSettingDialog = ({
 
     // Send DELETE request and show toast notifications
     toast.promise(
-      mainInstance.delete(`/system/settings/${selectedSystemSetting?.id}`),
+      mainInstance.delete(`/services/vouchers/${selectedServiceVoucher?.id}`),
       {
         loading: 'Loading...',
         success: () => {
@@ -78,7 +78,7 @@ const DeleteSystemSettingDialog = ({
 
             {/* Item */}
             <h2 className="text-center text-2xl font-semibold">
-              {selectedSystemSetting?.label}
+              {selectedServiceVoucher?.code}
             </h2>
           </DialogBody>
 
@@ -101,4 +101,4 @@ const DeleteSystemSettingDialog = ({
   );
 };
 
-export default DeleteSystemSettingDialog;
+export default DeleteVoucherDialog;

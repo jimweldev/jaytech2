@@ -105,6 +105,7 @@ class ServiceItemController extends Controller {
             }
 
             $record = ServiceItem::create([
+                'service_brand_category_id' => $request->service_brand_category_id,
                 'label' => $request->label,
                 'thumbnail_path' => $filePath,
             ]);

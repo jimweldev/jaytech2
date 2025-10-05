@@ -4,6 +4,6 @@ export type Service = {
   description?: string;
   slug?: string;
   thumbnail_path?: string;
-  created_at?: Date;
-  updated_at?: Date;
+  created_at?: string;
+  updated_at?: string;
 };

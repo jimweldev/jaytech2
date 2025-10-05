@@ -14,6 +14,7 @@ class ServiceBrand extends Model {
         'updated_at',
     ];
 
+    // used to directly access services without going through service_brand_categories
     public function services() {
         return $this->belongsToMany(Service::class, 'service_brand_categories')
             ->withTimestamps()

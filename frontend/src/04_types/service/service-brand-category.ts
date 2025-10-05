@@ -7,6 +7,6 @@ export type ServiceBrandCategory = {
   service_brand_id?: number;
   service?: Service;
   service_brand?: ServiceBrand;
-  created_at?: Date;
-  updated_at?: Date;
+  created_at?: string;
+  updated_at?: string;
 };

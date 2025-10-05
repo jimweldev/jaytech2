@@ -16,6 +16,8 @@ use App\Http\Controllers\Service\ServiceBrandModelController;
 use App\Http\Controllers\Service\ServiceBrandModelItemController;
 use App\Http\Controllers\Service\ServiceController;
 use App\Http\Controllers\Service\ServiceItemController;
+use App\Http\Controllers\Service\ServiceClaimedVoucherController;
+use App\Http\Controllers\Service\ServiceVoucherController;
 use App\Http\Controllers\System\SystemGlobalDropdownController;
 use App\Http\Controllers\System\SystemSettingController;
 use App\Http\Controllers\User\UserImageController;
@@ -111,6 +113,12 @@ Route::middleware('auth.middleware')->group(function () {
 
     // service items
     Route::resource('/services/items', ServiceItemController::class);
+
+    // service vouchers
+    Route::resource('/services/vouchers', ServiceVoucherController::class);
+
+    // service vouchers
+    Route::resource('/services/claimed-vouchers', ServiceClaimedVoucherController::class);
 
     // services
     Route::resource('/services', ServiceController::class);

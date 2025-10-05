@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Service;
 use App\Helpers\QueryHelper;
 use App\Helpers\StorageHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Service\ServiceBrandModel;
+use App\Models\Service\ServiceClaimedVoucher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class ServiceBrandModelController extends Controller {
+class ServiceClaimedVoucherController extends Controller {
     /**
      * Display a paginated list of records with optional filtering and search.
      */
@@ -18,7 +19,10 @@ class ServiceBrandModelController extends Controller {
 
         try {
             // Initialize the query builder
-            $query = ServiceBrandModel::with(['service_brand_category.service_brand', 'service_brand_category.service']);
+            $query = ServiceClaimedVoucher::with([
+                'service_voucher',
+                'customer'
+            ]);
 
             // Define the default query type
             $type = 'paginate';
@@ -68,7 +72,7 @@ class ServiceBrandModelController extends Controller {
      */
     public function show($id) {
         // Find the record by ID
-        $record = ServiceBrandModel::where('id', $id)
+        $record = ServiceClaimedVoucher::where('id', $id)
             ->first();
 
         if (!$record) {
@@ -86,38 +90,35 @@ class ServiceBrandModelController extends Controller {
      * Store a newly created record in storage.
      */
     public function store(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+                'message' => 'Access denied.',
+            ], 403);
+        }
+
         try {
-            $filePath = null;
+            // Check if a record with the same 'value' already exists
+            $recordExists = ServiceClaimedVoucher::where('code', $request->input('code'))->exists();
 
-            if ($request->hasFile('thumbnail')) {
-                $thumbnail = $request->file('thumbnail');
-                $extension = $thumbnail->getClientOriginalExtension();
-                $uniqueName = Str::uuid().'.'.$extension;
-
-                $filePath = StorageHelper::uploadFileAs($thumbnail, 'models', $uniqueName);
-
-                if (!$filePath) {
-                    return response()->json([
-                        'message' => "Failed to upload {$thumbnail->getClientOriginalName()}. File size too large.",
-                    ], 400);
-                }
+            if ($recordExists) {
+                // Return a 400 response if the record already exists
+                return response()->json([
+                    'message' => 'Record already exists.',
+                ], 400);
             }
 
-            // create a new record
-            $record = ServiceBrandModel::create([
-                'service_brand_category_id' => $request->service_brand_category_id,
-                'label' => $request->label,
-                'slug' => Str::slug($request->label),
-                'checkup_price' => $request->checkup_price,
-                'thumbnail_path' => $filePath,
-            ]);
+            // Create a new record
+            $record = ServiceClaimedVoucher::create($request->all());
 
             // Return the created record
             return response()->json($record, 201);
         } catch (\Exception $e) {
             // Handle exceptions and return an error response
             return response()->json([
-                'message' => 'An error occurred',
+                'message' => 'An error occurred.',
                 'error' => $e->getMessage(),
             ], 400);
         }
@@ -127,9 +128,18 @@ class ServiceBrandModelController extends Controller {
      * Update the specified record in storage.
      */
     public function update(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+                'message' => 'Access denied.',
+            ], 403);
+        }
+
         try {
             // Find the record by ID
-            $record = ServiceBrandModel::find($id);
+            $record = ServiceClaimedVoucher::find($id);
 
             if (!$record) {
                 // Return a 404 response if the record is not found
@@ -138,53 +148,15 @@ class ServiceBrandModelController extends Controller {
                 ], 404);
             }
 
-            $filePath = $record->thumbnail_path; // default to current thumbnail
+            // Update the record
+            $record->update($request->all());
 
-            // Case 1: A new file is uploaded
-            if ($request->hasFile('thumbnail')) {
-                $thumbnail = $request->file('thumbnail');
-                $extension = $thumbnail->getClientOriginalExtension();
-                $uniqueName = Str::uuid().'.'.$extension;
-
-                $filePath = StorageHelper::uploadFileAs($thumbnail, 'models', $uniqueName);
-
-                if (!$filePath) {
-                    return response()->json([
-                        'message' => "Failed to upload {$thumbnail->getClientOriginalName()}. File size too large.",
-                    ], 400);
-                }
-
-                // Optionally delete old file if it exists
-                if ($record->thumbnail_path) {
-                    StorageHelper::deleteFile($record->thumbnail_path);
-                }
-            }
-            // Case 2: Explicit request to clear thumbnail
-            elseif ($request->has('models') && $request->thumbnail === '') {
-                if ($record->thumbnail_path) {
-                    StorageHelper::deleteFile($record->thumbnail_path);
-                }
-                $filePath = null;
-            }
-
-            // Update brand itself
-            $record->update([
-                'service_brand_category_id' => $request->service_brand_category_id,
-                'label' => $request->label,
-                'slug' => Str::slug($request->label),
-                'checkup_price' => $request->checkup_price,
-                'thumbnail_path' => $filePath,
-            ]);
-
-            // // Update the record
-            // $record->update($request->all());
-
-            // // Return the updated record
+            // Return the updated record
             return response()->json($record, 200);
         } catch (\Exception $e) {
             // Handle exceptions and return an error response
             return response()->json([
-                'message' => 'An error occurred',
+                'message' => 'An error occurred.',
                 'error' => $e->getMessage(),
             ], 400);
         }
@@ -196,7 +168,7 @@ class ServiceBrandModelController extends Controller {
     public function destroy($id) {
         try {
             // Find the record by ID
-            $record = ServiceBrandModel::find($id);
+            $record = ServiceClaimedVoucher::find($id);
 
             if (!$record) {
                 // Return a 404 response if the record is not found

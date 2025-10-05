@@ -4,6 +4,6 @@ export type UserImage = {
   file_name?: string;
   file_path?: string;
   is_pinned?: string;
-  created_at?: Date;
-  updated_at?: Date;
+  created_at?: string;
+  updated_at?: string;
 };

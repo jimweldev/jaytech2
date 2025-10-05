@@ -10,6 +10,6 @@ export type ServiceBookingDropPointTechnician = {
   technician?: User;
   service_booking_drop_point?: ServiceBookingDropPoint;
   service?: Service;
-  created_at?: Date;
-  updated_at?: Date;
+  created_at?: string;
+  updated_at?: string;
 };

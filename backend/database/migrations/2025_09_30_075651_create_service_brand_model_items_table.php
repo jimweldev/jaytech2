@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->foreignId('service_brand_model_id')->constrained('service_brand_models')->onDelete('cascade');
             $table->foreignId('service_item_id')->constrained('service_items')->onDelete('cascade');
             $table->decimal('price', 10, 2);
+            $table->text('details')->nullable();
             $table->softDeletes();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();

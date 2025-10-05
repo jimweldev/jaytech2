@@ -58,6 +58,7 @@ const ManageImtesModelDialog = ({
     { label: 'Service' },
     { label: 'Item' },
     { label: 'Price', column: 'price' },
+    { label: 'Details', column: 'details' },
     { label: 'Created At', column: 'created_at', className: 'w-[200px]' },
     { label: 'Actions', className: 'w-[100px]' },
   ];
@@ -108,6 +109,7 @@ const ManageImtesModelDialog = ({
                       </TableCell>
                       <TableCell>{modelItem.service_item?.label}</TableCell>
                       <TableCell>€{formatNumber(modelItem.price, 2)}</TableCell>
+                      <TableCell>{modelItem.details}</TableCell>
                       <TableCell>
                         {getDateTimezone(modelItem.created_at, 'date_time')}
                       </TableCell>
