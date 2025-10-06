@@ -114,6 +114,7 @@ Route::middleware('auth.middleware')->group(function () {
 
     // service brands
     Route::resource('/services/brands', ServiceBrandController::class);
+    Route::get('/services/brands/by-service/{service_slug}', [ServiceBrandController::class, 'getBrandByServiceSlug'])->where('service_slug', '^[a-zA-Z0-9-_]+$');
 
     // service items
     Route::resource('/services/items', ServiceItemController::class);

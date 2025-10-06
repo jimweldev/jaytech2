@@ -5,7 +5,7 @@ import type { ReactSelectOption } from '@/04_types/_common/react-select-option';
 import { mainInstance } from '@/07_instances/main-instance';
 import type { ServiceBrandModelItem } from '@/04_types/service/service-brand-model-item';
 
-const ServiceBrandModelItem = ({ serviceBrandCategoryId, ...props }: any) => {
+const ServiceBrandModelItemSelect = ({ serviceBrandCategoryId, ...props }: any) => {
   const loadOptions: LoadOptions<
     ReactSelectOption,
     never,
@@ -70,4 +70,4 @@ const ServiceBrandModelItem = ({ serviceBrandCategoryId, ...props }: any) => {
   );
 };
 
-export default ServiceBrandModelItem;
+export default ServiceBrandModelItemSelect;

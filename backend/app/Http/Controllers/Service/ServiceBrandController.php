@@ -236,4 +236,24 @@ class ServiceBrandController extends Controller {
             ], 400);
         }
     }
+
+    public function getBrandByServiceSlug($service_slug) {
+        try {
+            $brands = ServiceBrand::with('models')
+                    ->whereHas('service_brand_categories.service', function ($query) use ($service_slug) {
+                        $query->where('slug', $service_slug);
+                    })->get();
+
+
+
+            return response()->json([
+                'records' => $brands,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred',
+                'error' => $e->getMessage(),
+            ], 400);
+        }
+    }
 }

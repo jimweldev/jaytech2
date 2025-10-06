@@ -1,3 +1,4 @@
+import useServiceBookedItem from "@/05_stores/service/service-booked-items";
 import PaymentButton from "@/components/button/payment/payment-button";
 import PageHeader from "@/components/typography/page-header";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,11 @@ import { useNavigate } from "react-router-dom";
 
 const CheckOutPage = () => {
   const navigate = useNavigate();
+
+  console.log('checkout page loaded');
+  const { bookedServices } = useServiceBookedItem();
+  console.log(bookedServices)
+
 
   const [activeSection, setActiveSection] = useState<"appointment" | "dropPoint" | null>("appointment");
 
