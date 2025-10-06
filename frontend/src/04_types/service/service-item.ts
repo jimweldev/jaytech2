@@ -6,6 +6,6 @@ export type ServiceItem = {
   label?: string;
   thumbnail_path?: string;
   service_brand_category?: ServiceBrandCategory;
-  created_at?: Date;
-  updated_at?: Date;
+  created_at?: string;
+  updated_at?: string;
 };

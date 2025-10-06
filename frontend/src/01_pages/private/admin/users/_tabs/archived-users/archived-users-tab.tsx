@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FaHistory } from 'react-icons/fa';
-import { FaRegCircleXmark } from 'react-icons/fa6';
+// import { FaRegCircleXmark } from 'react-icons/fa6';
 import { type User } from '@/04_types/user/user';
 import useUserStore from '@/05_stores/user/user-store';
 import DataTable, {
@@ -41,7 +41,7 @@ const ArchivedUsersTab = () => {
     { label: 'ID', column: 'id', className: 'w-[80px]' },
     { label: 'Name', column: 'last_name,first_name' },
     { label: 'Admin' },
-    { label: 'Roles' },
+    // { label: 'Roles' },
     { label: 'Created At', column: 'created_at', className: 'w-[200px]' },
     { label: 'Actions', className: 'w-[100px]' },
   ];
@@ -95,7 +95,7 @@ const ArchivedUsersTab = () => {
                         {user.is_admin ? 'Admin' : 'User'}
                       </Badge>
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       <div className="flex flex-wrap items-center gap-1">
                         {user?.rbac_user_roles?.length === 0 ? (
                           <Badge variant="outline">
@@ -112,7 +112,7 @@ const ArchivedUsersTab = () => {
                           </div>
                         )}
                       </div>
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
                       {getDateTimezone(user.created_at, 'date_time')}
                     </TableCell>

@@ -107,15 +107,14 @@ class ServiceBrandController extends Controller {
                 }
             }
 
-            // ✅ Create brand
             $brand = ServiceBrand::create([
                 'label' => $request->label,
+                'slug' => Str::slug($request->label),
                 'thumbnail_path' => $filePath,
             ]);
 
             $service_ids = $request->service_ids;
 
-            // ✅ Sync services (replaces foreach)
             if ($request->has('service_ids') && is_array($request->service_ids)) {
                 $brand->services()->sync($request->service_ids);
             }
@@ -181,13 +180,14 @@ class ServiceBrandController extends Controller {
                 $filePath = null;
             }
 
-            // ✅ Update brand itself
+            // Update brand itself
             $record->update([
                 'label' => $request->label,
+                'slug' => Str::slug($request->label),
                 'thumbnail_path' => $filePath,
             ]);
 
-            // ✅ Sync services via pivot
+            // Sync services via pivot
             if ($request->filled('service_ids') && is_array($request->service_ids)) {
                 $record->services()->sync($request->service_ids);
             }

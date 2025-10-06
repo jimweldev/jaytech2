@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import { mainInstance } from '@/07_instances/main-instance';
 import FileDropzone from '@/components/dropzone/file-dropzone';
+import MailTemplateSelect from '@/components/react-select/mail-template-select';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -29,30 +30,20 @@ import { mergeUniqueFiles } from '@/lib/react-dropzone/merge-unique-files';
 
 // Zod schema to validate the form input
 const FormSchema = z.object({
-  mail_template_id: z.string().min(1, { message: 'Required' }),
-  user_id: z.string(),
+  mail_template: z.object(
+    {
+      label: z.string().min(1, {
+        message: 'Required',
+      }),
+      value: z.number().min(1, {
+        message: 'Required',
+      }),
+    },
+    {
+      message: 'Required',
+    },
+  ),
   subject: z.string().min(1, { message: 'Required' }),
-  recipient_email: z.email({ message: 'Invalid email address' }),
-  cc: z.string().refine(
-    data => {
-      try {
-        return data === '' || !!JSON.parse(data);
-      } catch {
-        return false;
-      }
-    },
-    { message: 'Invalid JSON' },
-  ),
-  bcc: z.string().refine(
-    data => {
-      try {
-        return data === '' || !!JSON.parse(data);
-      } catch {
-        return false;
-      }
-    },
-    { message: 'Invalid JSON' },
-  ),
   content_data: z.string().refine(
     data => {
       try {
@@ -104,12 +95,8 @@ const CreateMailLogDialog = ({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      mail_template_id: '',
-      user_id: '',
+      mail_template: undefined,
       subject: '',
-      recipient_email: '',
-      cc: '',
-      bcc: '',
       content_data: '',
       attachments: [],
     },
@@ -123,12 +110,8 @@ const CreateMailLogDialog = ({
     // Create a new FormData object to handle file uploads
     const formData = new FormData();
 
-    formData.append('mail_template_id', data.mail_template_id);
-    formData.append('user_id', data.user_id);
+    formData.append('mail_template_id', data.mail_template.value.toString());
     formData.append('subject', data.subject);
-    formData.append('recipient_email', data.recipient_email);
-    formData.append('cc', data.cc);
-    formData.append('bcc', data.bcc);
     formData.append('content_data', data.content_data);
 
     // Add files as attachments
@@ -177,88 +160,17 @@ const CreateMailLogDialog = ({
                   {/* Mail template ID field */}
                   <FormField
                     control={form.control}
-                    name="mail_template_id"
-                    render={({ field }) => (
+                    name="mail_template"
+                    render={({ field, fieldState }) => (
                       <FormItem className="col-span-12">
-                        <FormLabel>Mail Template ID</FormLabel>
+                        <FormLabel>Mail Template</FormLabel>
                         <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* User ID field */}
-                  <FormField
-                    control={form.control}
-                    name="user_id"
-                    render={({ field }) => (
-                      <FormItem className="col-span-12">
-                        <FormLabel>User ID</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Recipient email field */}
-                  <FormField
-                    control={form.control}
-                    name="recipient_email"
-                    render={({ field }) => (
-                      <FormItem className="col-span-12">
-                        <FormLabel>Recipient Email</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Cc field */}
-                  <FormField
-                    control={form.control}
-                    name="cc"
-                    render={({ field }) => (
-                      <FormItem className="col-span-12">
-                        <FormLabel>Cc</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Bcc field */}
-                  <FormField
-                    control={form.control}
-                    name="bcc"
-                    render={({ field }) => (
-                      <FormItem className="col-span-12">
-                        <FormLabel>Bcc</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="gap-layout col-span-6 grid grid-cols-12">
-                  {/* Subject field */}
-                  <FormField
-                    control={form.control}
-                    name="subject"
-                    render={({ field }) => (
-                      <FormItem className="col-span-12">
-                        <FormLabel>Subject</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
+                          <MailTemplateSelect
+                            className={`${fieldState.invalid ? 'invalid' : ''}`}
+                            placeholder="Select mail template"
+                            value={field.value}
+                            onChange={field.onChange}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -275,7 +187,26 @@ const CreateMailLogDialog = ({
                         <FormControl>
                           <Textarea
                             {...field}
-                            placeholder={`{\n  "name": "John Doe",\n  "avatar": "https://example.com/avatar.jpg"\n}`}
+                            placeholder={`{\n  "message": "Lorem ipsum dolor sit amet"\n}`}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="gap-layout col-span-6 grid grid-cols-12">
+                  {/* Subject field */}
+                  <FormField
+                    control={form.control}
+                    name="subject"
+                    render={({ field }) => (
+                      <FormItem className="col-span-12">
+                        <FormLabel>Subject</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="JayTech Voucher Code"
                           />
                         </FormControl>
                         <FormMessage />

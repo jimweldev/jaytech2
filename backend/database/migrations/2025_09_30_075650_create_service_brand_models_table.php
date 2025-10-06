@@ -13,6 +13,8 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('service_brand_category_id')->constrained('service_brand_categories')->onDelete('cascade');
             $table->string('label');
+            $table->string('slug');
+            $table->decimal('checkup_price', 10, 2)->nullable();
             $table->string('thumbnail_path')->nullable();
             $table->softDeletes();
             $table->timestamp('created_at')->useCurrent();

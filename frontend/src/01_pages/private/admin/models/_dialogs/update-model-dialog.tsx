@@ -47,6 +47,12 @@ const FormSchema = z.object({
   label: z.string().min(1, {
     message: 'Required',
   }),
+  checkup_price: z
+    .string()
+    .optional()
+    .refine(val => !val || /^[0-9]+(\.[0-9]+)?$/.test(val), {
+      message: 'Must be a valid number',
+    }),
 });
 
 type UpdateModelDialogProps = {
@@ -67,6 +73,7 @@ const UpdateModelDialog = ({
     defaultValues: {
       service_brand_category: undefined,
       label: '',
+      checkup_price: '',
     },
   });
 
@@ -82,6 +89,7 @@ const UpdateModelDialog = ({
             }
           : undefined,
         label: selectedServiceBrandModel.label || '',
+        checkup_price: selectedServiceBrandModel.checkup_price || '',
       });
 
       if (selectedServiceBrandModel.thumbnail_path) {
@@ -144,6 +152,7 @@ const UpdateModelDialog = ({
       'service_brand_category_id',
       data.service_brand_category.value.toString(),
     );
+    formData.append('checkup_price', data.checkup_price || '');
 
     toast.promise(
       mainInstance.post(
@@ -237,6 +246,21 @@ const UpdateModelDialog = ({
                   render={({ field }) => (
                     <FormItem className="col-span-12">
                       <FormLabel>Label</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Checkup price field */}
+                <FormField
+                  control={form.control}
+                  name="checkup_price"
+                  render={({ field }) => (
+                    <FormItem className="col-span-12">
+                      <FormLabel>Checkup Price</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>

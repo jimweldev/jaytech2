@@ -107,6 +107,8 @@ class ServiceBrandModelController extends Controller {
             $record = ServiceBrandModel::create([
                 'service_brand_category_id' => $request->service_brand_category_id,
                 'label' => $request->label,
+                'slug' => Str::slug($request->label),
+                'checkup_price' => $request->checkup_price,
                 'thumbnail_path' => $filePath,
             ]);
 
@@ -169,6 +171,8 @@ class ServiceBrandModelController extends Controller {
             $record->update([
                 'service_brand_category_id' => $request->service_brand_category_id,
                 'label' => $request->label,
+                'slug' => Str::slug($request->label),
+                'checkup_price' => $request->checkup_price,
                 'thumbnail_path' => $filePath,
             ]);
 

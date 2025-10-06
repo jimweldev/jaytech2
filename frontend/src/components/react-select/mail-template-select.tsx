@@ -2,10 +2,10 @@ import { AxiosError } from 'axios';
 import { AsyncPaginate, type LoadOptions } from 'react-select-async-paginate';
 import { toast } from 'sonner';
 import type { ReactSelectOption } from '@/04_types/_common/react-select-option';
-import type { ServiceProduct } from '@/04_types/service/service-product';
+import type { Service } from '@/04_types/service/service';
 import { mainInstance } from '@/07_instances/main-instance';
 
-const ProductSelect = ({ ...props }) => {
+const MailTemplateSelect = ({ ...props }) => {
   const loadOptions: LoadOptions<
     ReactSelectOption,
     never,
@@ -15,10 +15,10 @@ const ProductSelect = ({ ...props }) => {
 
     try {
       const response = await mainInstance.get(
-        `/select/products?page=${page}&search=${searchQuery}&sort=label`,
+        `/select/mail-templates?page=${page}&search=${searchQuery}&sort=label`,
       );
 
-      const options = response.data.records.map((role: ServiceProduct) => ({
+      const options = response.data.records.map((role: Service) => ({
         value: role.id,
         label: role.label,
       }));
@@ -69,4 +69,4 @@ const ProductSelect = ({ ...props }) => {
   );
 };
 
-export default ProductSelect;
+export default MailTemplateSelect;

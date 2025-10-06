@@ -46,6 +46,12 @@ const FormSchema = z.object({
   label: z.string().min(1, {
     message: 'Required',
   }),
+  checkup_price: z
+    .string()
+    .optional()
+    .refine(val => !val || /^[0-9]+(\.[0-9]+)?$/.test(val), {
+      message: 'Must be a valid number',
+    }),
 });
 
 // Component Props
@@ -66,6 +72,7 @@ const CreateModelDialog = ({
     defaultValues: {
       service_brand_category: undefined,
       label: '',
+      checkup_price: '',
     },
   });
 
@@ -117,6 +124,7 @@ const CreateModelDialog = ({
       'service_brand_category_id',
       data.service_brand_category.value.toString(),
     );
+    formData.append('checkup_price', data.checkup_price || '');
 
     toast.promise(mainInstance.post(`/services/brands/models`, formData), {
       loading: 'Loading...',
@@ -197,6 +205,21 @@ const CreateModelDialog = ({
                   render={({ field }) => (
                     <FormItem className="col-span-12">
                       <FormLabel>Label</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Checkup price field */}
+                <FormField
+                  control={form.control}
+                  name="checkup_price"
+                  render={({ field }) => (
+                    <FormItem className="col-span-12">
+                      <FormLabel>Checkup Price</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>

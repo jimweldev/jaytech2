@@ -5,12 +5,15 @@ import useServiceStore from '@/05_stores/service/service-store';
 import DataTable, {
   type DataTableColumn,
 } from '@/components/data-table/data-table';
+import FancyboxViewer from '@/components/fancybox/fancybox-viewer';
+import ReactImage from '@/components/image/react-image';
 import InputGroup from '@/components/input-group/input-group';
 import Tooltip from '@/components/tooltip/tooltip';
 import PageHeader from '@/components/typography/page-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardBody } from '@/components/ui/card';
 import { TableCell, TableRow } from '@/components/ui/table';
+import useFancybox from '@/hooks/fancybox/use-fancybox';
 import useTanstackPaginateQuery from '@/hooks/tanstack/use-tanstack-paginate-query';
 import { getDateTimezone } from '@/lib/date/get-date-timezone';
 import CreateServiceDialog from './_dialogs/create-service-dialog';
@@ -20,6 +23,8 @@ import UpdateServiceDialog from './_dialogs/update-service-dialog';
 const ServicesPage = () => {
   // Store
   const { setSelectedService } = useServiceStore();
+
+  const [fancyboxRef] = useFancybox();
 
   // Dialog States
   const [openCreateServiceDialog, setOpenCreateServiceDialog] = useState(false);
@@ -36,6 +41,8 @@ const ServicesPage = () => {
   const columns: DataTableColumn[] = [
     { label: '#', column: 'id', className: 'w-[80px]' },
     { label: 'Label', column: 'label' },
+    { label: 'Description', column: 'description' },
+    { label: 'Slug' },
     { label: 'Created At', column: 'created_at', className: 'w-[200px]' },
     { label: 'Actions', className: 'w-[100px]' },
   ];
@@ -57,7 +64,7 @@ const ServicesPage = () => {
       <PageHeader className="mb-3">Services</PageHeader>
 
       {/* Card */}
-      <Card>
+      <Card ref={fancyboxRef}>
         <CardBody>
           {/* Data Table */}
           <DataTable
@@ -70,7 +77,31 @@ const ServicesPage = () => {
               ? servicesPagination.data.records.map(service => (
                   <TableRow key={service.id}>
                     <TableCell>{service.id}</TableCell>
-                    <TableCell>{service.label}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <div className="shrink-0">
+                          <FancyboxViewer
+                            baseUrl={import.meta.env.VITE_STORAGE_BASE_URL}
+                            filePath={service.thumbnail_path}
+                            data-fancybox={`${service.id}`}
+                            data-caption={service.label}
+                          >
+                            <ReactImage
+                              className="outline-primary border-card flex size-7 items-center justify-center overflow-hidden rounded-xs border-1 outline-2"
+                              src={`${import.meta.env.VITE_STORAGE_BASE_URL}${service?.thumbnail_path}`}
+                            />
+                          </FancyboxViewer>
+                        </div>
+
+                        <div>
+                          <h6 className="text-xs font-semibold">
+                            {service.label}
+                          </h6>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>{service.description}</TableCell>
+                    <TableCell>{service.slug}</TableCell>
                     <TableCell>
                       {getDateTimezone(service.created_at, 'date_time')}
                     </TableCell>

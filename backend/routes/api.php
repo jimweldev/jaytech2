@@ -9,13 +9,15 @@ use App\Http\Controllers\Example\TaskController;
 use App\Http\Controllers\Mail\MailLogController;
 use App\Http\Controllers\Mail\MailTemplateController;
 use App\Http\Controllers\Select\SelectController;
+use App\Http\Controllers\Service\ServiceBookingDropPointController;
+use App\Http\Controllers\Service\ServiceBookingDropPointTechnicianController;
 use App\Http\Controllers\Service\ServiceBrandController;
 use App\Http\Controllers\Service\ServiceBrandModelController;
 use App\Http\Controllers\Service\ServiceBrandModelItemController;
 use App\Http\Controllers\Service\ServiceController;
 use App\Http\Controllers\Service\ServiceItemController;
-use App\Http\Controllers\Service\ServiceBookingDropPointController;
-use App\Http\Controllers\Service\ServiceBookingDropPointTechnicianController;
+use App\Http\Controllers\Service\ServiceClaimedVoucherController;
+use App\Http\Controllers\Service\ServiceVoucherController;
 use App\Http\Controllers\System\SystemGlobalDropdownController;
 use App\Http\Controllers\System\SystemSettingController;
 use App\Http\Controllers\User\UserImageController;
@@ -112,6 +114,12 @@ Route::middleware('auth.middleware')->group(function () {
     // service items
     Route::resource('/services/items', ServiceItemController::class);
 
+    // service vouchers
+    Route::resource('/services/vouchers', ServiceVoucherController::class);
+
+    // service vouchers
+    Route::resource('/services/claimed-vouchers', ServiceClaimedVoucherController::class);
+
     // services
     Route::resource('/services', ServiceController::class);
 
@@ -124,6 +132,8 @@ Route::middleware('auth.middleware')->group(function () {
     Route::get('/select/services', [SelectController::class, 'getSelectServices']);
     Route::get('/select/service-brand-categories', [SelectController::class, 'getSelectServiceBrandCategories']);
     Route::get('/select/service-items', [SelectController::class, 'getSelectServiceItems']);
+    Route::get('/select/mail-templates', [SelectController::class, 'getSelectMailTemplates']);
+    Route::get('/select/drop-point-technicians', [SelectController::class, 'getSelectDropPointechnicians']);
     Route::get('/select/service-brand-items', [SelectController::class, 'getSelectServicesByCategoryAndModel']);
 
     // ==============

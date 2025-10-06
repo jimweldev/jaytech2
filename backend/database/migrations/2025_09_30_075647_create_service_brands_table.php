@@ -12,6 +12,7 @@ return new class extends Migration {
         Schema::create('service_brands', function (Blueprint $table) {
             $table->id();
             $table->string('label')->unique();
+            $table->string('slug');
             $table->string('thumbnail_path')->nullable();
             $table->softDeletes();
             $table->timestamp('created_at')->useCurrent();

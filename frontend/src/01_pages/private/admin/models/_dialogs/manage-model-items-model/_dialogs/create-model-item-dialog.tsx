@@ -24,6 +24,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 // Zod schema to validate the form input
 const FormSchema = z.object({
@@ -46,6 +47,7 @@ const FormSchema = z.object({
     .refine(val => /^[0-9]+(\.[0-9]+)?$/.test(val), {
       message: 'Must be a valid number',
     }),
+  details: z.string(),
 });
 
 // Component Props
@@ -66,6 +68,7 @@ const CreateServiceDialog = ({
     defaultValues: {
       service_item: undefined,
       price: '',
+      details: '',
     },
   });
 
@@ -151,6 +154,21 @@ const CreateServiceDialog = ({
                       <FormLabel>Price</FormLabel>
                       <FormControl>
                         <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Details field */}
+                <FormField
+                  control={form.control}
+                  name="details"
+                  render={({ field }) => (
+                    <FormItem className="col-span-12">
+                      <FormLabel>Details</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

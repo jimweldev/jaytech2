@@ -71,7 +71,7 @@ const DeleteSystemSettingDialog = ({
             <CircleAlert className="text-destructive mx-auto mb-4" size={64} />
 
             {/* Modal title */}
-            <h3 className="text-center text-xl">Delete SystemSetting</h3>
+            <h3 className="text-center text-xl">Delete System Setting</h3>
             <p className="text-muted-foreground mb-2 text-center">
               Are you sure you want to delete this record?
             </p>
