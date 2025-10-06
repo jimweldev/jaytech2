@@ -2,7 +2,7 @@ import PageHeader from '@/components/typography/page-header';
 import BookingsInfiniteScrollComponent from './_components/bookings-infinite-scroll-component';
 
 const bookingConfigs = [
-  { status: '', sort: 'created_at' },
+  { status: 'Pending', sort: 'created_at' },
   { status: 'In Progress', sort: 'created_at' },
 ] as const;
 

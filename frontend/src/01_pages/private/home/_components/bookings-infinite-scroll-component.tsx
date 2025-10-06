@@ -53,93 +53,101 @@ const BookingsInfiniteScrollComponent = ({
 
   return (
     <Card className="basis-[300px]">
-      <CardBody
-        className="h-[calc(100vh-150px)] overflow-y-auto !p-2"
-        id={`bookings-scrollable-${status.replace(/\s+/g, '-').toLowerCase()}`}
-        ref={containerRef}
-      >
-        <InfiniteScroll
-          className="select-none"
-          dataLength={bookings.length}
-          next={fetchNextPage}
-          hasMore={!!hasNextPage}
-          loader={<p className="p-2 text-center text-sm">Loading more...</p>}
-          scrollableTarget={`bookings-scrollable-${status.replace(/\s+/g, '-').toLowerCase()}`}
-          pullDownToRefresh
-          pullDownToRefreshThreshold={80}
-          refreshFunction={handlePullToRefresh}
-          pullDownToRefreshContent={
-            <h4 className="text-muted-foreground p-2 text-center text-sm">
-              ↓ Pull down to refresh
-            </h4>
-          }
-          releaseToRefreshContent={
-            <h4 className="text-success p-2 text-center text-sm">
-              ↑ Release to refresh
-            </h4>
-          }
-          endMessage={
-            <p
-              className={cn(
-                'text-muted-foreground p-2 text-center text-xs',
-                (isLoading || bookings.length === 0) && 'hidden',
-              )}
-            >
-              No more bookings
-            </p>
-          }
+      <CardBody className="!p-0">
+        <div className="p-2 pb-0">
+          <h2 className="text-sm font-semibold">{status}</h2>
+        </div>
+        <div
+          className="h-[calc(100vh-150px)] overflow-y-auto p-2"
+          id={`bookings-scrollable-${status.replace(/\s+/g, '-').toLowerCase()}`}
+          ref={containerRef}
         >
-          <div className="space-y-2">
-            {bookings.map(booking => (
-              <div
-                key={booking.id}
-                className="rounded-lg border border-gray-200 bg-white p-2 transition hover:shadow"
+          <InfiniteScroll
+            className="select-none"
+            dataLength={bookings.length}
+            next={fetchNextPage}
+            hasMore={!!hasNextPage}
+            loader={<p className="p-2 text-center text-sm">Loading more...</p>}
+            scrollableTarget={`bookings-scrollable-${status.replace(/\s+/g, '-').toLowerCase()}`}
+            pullDownToRefresh
+            pullDownToRefreshThreshold={80}
+            refreshFunction={handlePullToRefresh}
+            pullDownToRefreshContent={
+              <h4 className="text-muted-foreground p-2 text-center text-sm">
+                ↓ Pull down to refresh
+              </h4>
+            }
+            releaseToRefreshContent={
+              <h4 className="text-success p-2 text-center text-sm">
+                ↑ Release to refresh
+              </h4>
+            }
+            endMessage={
+              <p
+                className={cn(
+                  'text-muted-foreground p-2 text-center text-xs',
+                  (isLoading || bookings.length === 0) && 'hidden',
+                )}
               >
-                <div className="mb-1 flex items-center justify-between">
-                  <h4 className="text-xs font-semibold text-gray-700">
-                    JT-000000{booking.id}
-                  </h4>
-                </div>
+                No more bookings
+              </p>
+            }
+          >
+            <div className="space-y-2">
+              {bookings.map(booking => (
+                <div
+                  key={booking.id}
+                  className="rounded-lg border border-gray-200 bg-white p-2 transition hover:shadow"
+                >
+                  <div className="mb-1 flex items-center justify-between">
+                    <h4 className="text-xs font-semibold text-gray-700">
+                      JT-000000{booking.id}
+                    </h4>
+                  </div>
 
-                <p className="text-xs font-medium text-gray-900">
-                  {
-                    booking.service_brand_model?.service_brand_category
-                      ?.service_brand?.label
-                  }{' '}
-                  <span className="text-gray-600">
-                    • {booking.service_brand_model?.label}
-                  </span>
+                  <p className="text-xs font-medium text-gray-900">
+                    {
+                      booking.service_brand_model?.service_brand_category
+                        ?.service_brand?.label
+                    }{' '}
+                    <span className="text-gray-600">
+                      • {booking.service_brand_model?.label}
+                    </span>
+                  </p>
+
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    <Badge variant="secondary">Checkup</Badge>
+                  </div>
+
+                  <div className="mt-3 flex justify-between text-[11px] text-gray-500">
+                    <span>
+                      👨‍🔧{' '}
+                      {formatName(
+                        booking.service_booking_drop_point_technician
+                          ?.technician,
+                      )}
+                    </span>
+                    <span>
+                      📅 {getDateTimezone(booking.created_at, 'date')}
+                    </span>
+                  </div>
+                </div>
+              ))}
+
+              {isLoading && (
+                <p className="text-muted-foreground p-4 text-center text-sm">
+                  Loading bookings...
                 </p>
+              )}
 
-                <div className="mt-2 flex flex-wrap gap-1">
-                  <Badge variant="secondary">Checkup</Badge>
-                </div>
-
-                <div className="mt-3 flex justify-between text-[11px] text-gray-500">
-                  <span>
-                    👨‍🔧{' '}
-                    {formatName(
-                      booking.service_booking_drop_point_technician?.technician,
-                    )}
-                  </span>
-                  <span>📅 {getDateTimezone(booking.created_at, 'date')}</span>
-                </div>
-              </div>
-            ))}
-
-            {isLoading && (
-              <p className="text-muted-foreground p-4 text-center text-sm">
-                Loading bookings...
-              </p>
-            )}
-
-            {!isLoading && bookings.length === 0 && (
-              <p className="text-muted-foreground p-4 text-center text-sm">
-                No bookings found
-              </p>
-            )}
-          </div>
-        </InfiniteScroll>
+              {!isLoading && bookings.length === 0 && (
+                <p className="text-muted-foreground p-4 text-center text-sm">
+                  No bookings found
+                </p>
+              )}
+            </div>
+          </InfiniteScroll>
+        </div>
       </CardBody>
     </Card>
   );
