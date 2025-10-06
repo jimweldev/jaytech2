@@ -1,7 +1,6 @@
 import {
   FaCircleDot,
   FaFileArrowUp,
-  FaFilter,
   FaKeyboard,
   FaList,
   FaQuoteRight,
@@ -76,11 +75,6 @@ const ExamplesLayout = () => {
           title: 'List/Grid',
           url: '/examples/data-table/list-grid',
           icon: FaTableList,
-        },
-        {
-          title: 'List Filter',
-          url: '/examples/data-table/list-filter',
-          icon: FaFilter,
         },
       ],
     },

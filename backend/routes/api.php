@@ -9,6 +9,7 @@ use App\Http\Controllers\Example\TaskController;
 use App\Http\Controllers\Mail\MailLogController;
 use App\Http\Controllers\Mail\MailTemplateController;
 use App\Http\Controllers\Select\SelectController;
+use App\Http\Controllers\Service\ServiceBookingController;
 use App\Http\Controllers\Service\ServiceBookingDropPointController;
 use App\Http\Controllers\Service\ServiceBookingDropPointTechnicianController;
 use App\Http\Controllers\Service\ServiceBrandController;
@@ -107,6 +108,9 @@ Route::middleware('auth.middleware')->group(function () {
 
     // service drop points
     Route::resource('/services/drop-points', ServiceBookingDropPointController::class);
+
+    // service bookings
+    Route::resource('/services/bookings', ServiceBookingController::class);
 
     // service brands
     Route::resource('/services/brands', ServiceBrandController::class);
