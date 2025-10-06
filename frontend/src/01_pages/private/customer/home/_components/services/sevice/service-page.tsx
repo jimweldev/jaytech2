@@ -1,6 +1,7 @@
 import type { ServiceBrand } from "@/04_types/service/service-brand";
 import type { ServiceBrandModel } from "@/04_types/service/service-brand-model";
-import ServiceBrandModelItem from "@/components/react-select/service-brand-model-item";
+import useServiceBookedItem from "@/05_stores/service/service-booked-items";
+import ServiceBrandModelItemSelect from "@/components/react-select/service-brand-model-item-select";
 import PageHeader from "@/components/typography/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
@@ -49,6 +50,8 @@ const ServicePage = () => {
     const navigate = useNavigate();
     const [servicesList, setServicesList] = useState<Service[]>([]);
 
+    const { setBookedServices } = useServiceBookedItem();
+
     // get parameters from url
     const { brand, model } = useParams();
 
@@ -89,14 +92,14 @@ const ServicePage = () => {
         });
 
         form.reset({
-            service_item: [],
+            service_item: { label: "", value: undefined, price: "" },
             price: "",
         });
     };
 
 
     const bookNow = () => {
-        console.log(servicesList)
+        setBookedServices(servicesList);
     }
 
     return (
@@ -134,7 +137,7 @@ const ServicePage = () => {
                                                     <FormItem>
                                                         <FormLabel>Service Name</FormLabel>
                                                         <FormControl>
-                                                            <ServiceBrandModelItem
+                                                            <ServiceBrandModelItemSelect
                                                                 serviceBrandCategoryId={modelRecord.data?.id}
                                                                 className={`${fieldState.invalid ? "invalid" : ""}`}
                                                                 value={field.value}
@@ -177,7 +180,7 @@ const ServicePage = () => {
                                         </div>
 
                                         {/* Submit Button */}
-                                        <div className="flex flex-col gap-2">
+                                        <div className="flex items-center justify-center">
                                             <Button type="submit" variant="default" className="w-full">
                                                 Add Service
                                             </Button>
@@ -202,7 +205,7 @@ const ServicePage = () => {
                                             {servicesList.map((service) => (
                                                 <tr key={service.id} className="hover:bg-gray-50">
                                                     <td className="px-4 py-2 border">{service.label}</td>
-                                                    <td className="px-4 py-2 border">{service.price}</td>
+                                                    <td className="px-4 py-2 border">€{service.price}</td>
                                                     <td className="px-4 py-2 border text-center">
                                                         <Button
                                                             onClick={() =>
@@ -225,7 +228,7 @@ const ServicePage = () => {
                                             <tr className="bg-gray-100 font-semibold">
                                                 <td className="px-4 py-2 border text-right">Total:</td>
                                                 <td className="px-4 py-2 border">
-                                                    ₱
+                                                    €
                                                     {servicesList
                                                         .reduce(
                                                             (sum, item) => sum + parseFloat(item.price || "0"),

@@ -10,9 +10,8 @@ const ComputerBrandPage = () => {
 
   // Tanstack query hook for pagination
   const brandsPagination = useTanstackPaginateQuery<ServiceBrand>({
-    endpoint: '/services/brands',
+    endpoint: '/services/brands/by-service/computer-upgrade',
     defaultSort: 'id',
-    params: 'limit=1000',
   });
 
   // scroll to models when brand changes

@@ -10,9 +10,8 @@ const CarBrandPage = () => {
 
     // Tanstack query hook for pagination
     const brandsPagination = useTanstackPaginateQuery<ServiceBrand>({
-        endpoint: '/services/brands',
+        endpoint: '/services/brands/by-service/car-upgrade',
         defaultSort: 'id',
-        params: 'limit=1000',
     });
 
     // scroll to models when brand changes
@@ -71,8 +70,8 @@ const CarBrandPage = () => {
                                     key={item.label}
                                     onClick={() => setSelectedBrand(item)}
                                     className={`group bg-white rounded-xl border shadow-sm p-6 flex flex-col items-center transition-all duration-300 cursor-pointer ${selectedBrand.label === item.label
-                                            ? "border-blue-500 shadow-md"
-                                            : "border-gray-200 hover:border-blue-500 hover:shadow-md"
+                                        ? "border-blue-500 shadow-md"
+                                        : "border-gray-200 hover:border-blue-500 hover:shadow-md"
                                         }`}
                                 >
                                     <div className="w-24 h-14 flex items-center justify-center mb-3">
@@ -84,8 +83,8 @@ const CarBrandPage = () => {
                                     </div>
                                     <h3
                                         className={`text-lg font-semibold ${selectedBrand.label === item.label
-                                                ? "text-blue-600"
-                                                : "text-gray-800 group-hover:text-blue-600"
+                                            ? "text-blue-600"
+                                            : "text-gray-800 group-hover:text-blue-600"
                                             }`}
                                     >
                                         {item.label}
