@@ -31,7 +31,7 @@ const CartPage = () => {
     useState(false);
 
   return (
-    <div>
+    <div className="customer-container p-layout">
       <PageHeader className="mb-3">Shopping Cart</PageHeader>
 
       <Card>

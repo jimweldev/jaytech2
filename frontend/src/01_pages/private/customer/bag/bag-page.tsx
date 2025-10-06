@@ -10,7 +10,7 @@ const BagPage = () => {
   const { user } = useAuthUserStore();
 
   return (
-    <div>
+    <div className="customer-container p-layout">
       <PageHeader className="mb-3">Bag</PageHeader>
 
       {!user ? (

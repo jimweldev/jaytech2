@@ -19,7 +19,7 @@ class ServiceBrandController extends Controller {
 
         try {
             // Initialize the query builder
-            $query = ServiceBrand::with('service_brand_categories.service');
+            $query = ServiceBrand::with(['service_brand_categories.service', 'models']);
 
             // Define the default query type
             $type = 'paginate';

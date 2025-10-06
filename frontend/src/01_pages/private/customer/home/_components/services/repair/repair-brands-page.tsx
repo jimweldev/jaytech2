@@ -1,21 +1,19 @@
+import type { ServiceBrand } from "@/04_types/service/service-brand";
 import { Input } from "@/components/ui/input";
+import useTanstackPaginateQuery from "@/hooks/tanstack/use-tanstack-paginate-query";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 
 const RepairBrandPage = () => {
-    const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
+    const [selectedBrand, setSelectedBrand] = useState([] as ServiceBrand | any);
     const modelsRef = useRef<HTMLDivElement | null>(null);
 
-    const phoneBrands = [
-        { name: "Apple", image: "https://images.seeklogo.com/logo-png/15/2/apple-logo-png_seeklogo-158010.png", models: ["iPhone 12", "iPhone 13", "iPhone 14"] },
-        { name: "Samsung", image: "https://1000logos.net/wp-content/uploads/2017/06/Samsung-Logo-1993.png", models: ["Galaxy S21", "Galaxy Note 20", "Galaxy Z Fold3"] },
-        { name: "Google", image: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", models: ["Pixel 5", "Pixel 6", "Pixel 6a"] },
-        { name: "OnePlus", image: "https://1000logos.net/wp-content/uploads/2022/11/OnePlus-Logo.png", models: ["OnePlus 9", "OnePlus 9 Pro", "OnePlus Nord"] },
-        { name: "Huawei", image: "https://upload.wikimedia.org/wikipedia/en/thumb/0/04/Huawei_Standard_logo.svg/1181px-Huawei_Standard_logo.svg.png", models: ["P40 Pro", "Mate 40 Pro", "Nova 8"] },
-        { name: "Xiaomi", image: "https://upload.wikimedia.org/wikipedia/commons/2/29/Xiaomi_logo.svg", models: ["Mi 11", "Redmi Note 10", "Poco F3"] },
-    ];
-
-    const brand = phoneBrands.find((b) => b.name === selectedBrand);
+    // Tanstack query hook for pagination
+    const brandsPagination = useTanstackPaginateQuery<ServiceBrand>({
+        endpoint: '/services/brands',
+        defaultSort: 'id',
+        params: 'limit=1000',
+    });
 
     // scroll to models when brand changes
     useEffect(() => {
@@ -47,7 +45,7 @@ const RepairBrandPage = () => {
             </div>
 
             {/* Phone Brands */}
-            <div className="container mx-auto py-12">
+            <div className="container mx-auto py-12 px-2">
                 <div className="max-w-6xl mx-auto text-center">
                     <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight px-4 text-gray-900 mb-4">
                         Choose Your Phone Brand
@@ -57,7 +55,6 @@ const RepairBrandPage = () => {
                     <div className="mb-6 px-4">
                         <Input
                             className="w-full max-w-md mx-auto"
-
                             type="text"
                             placeholder="Search brand..."
                             value={searchTerm}
@@ -65,47 +62,48 @@ const RepairBrandPage = () => {
                         />
                     </div>
 
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                        {phoneBrands
-                            .filter(({ name }) =>
-                                name.toLowerCase().includes(searchTerm.toLowerCase())
-                            )
-                            .map(({ name, image }) => (
+                    {/* Brand List */}
+                    {brandsPagination.data?.records?.length ? (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                            {brandsPagination.data.records.map((item) => (
                                 <button
-                                    key={name}
-                                    onClick={() => setSelectedBrand(name)}
-                                    className={`group bg-white rounded-xl border shadow-sm p-6 flex flex-col items-center transition-all duration-300 cursor-pointer ${selectedBrand === name
+                                    key={item.label}
+                                    onClick={() => setSelectedBrand(item)}
+                                    className={`group bg-white rounded-xl border shadow-sm p-6 flex flex-col items-center transition-all duration-300 cursor-pointer ${selectedBrand.label === item.label
                                         ? "border-blue-500 shadow-md"
                                         : "border-gray-200 hover:border-blue-500 hover:shadow-md"
                                         }`}
                                 >
                                     <div className="w-24 h-14 flex items-center justify-center mb-3">
                                         <img
-                                            src={image}
-                                            alt={name}
+                                            src={item.thumbnail_path || "https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-network-placeholder-png-image_3416659.jpg"}
+                                            alt={item.label}
                                             className="object-contain max-h-full transition-transform duration-300 group-hover:scale-105"
                                         />
                                     </div>
                                     <h3
-                                        className={`text-lg font-semibold ${selectedBrand === name
+                                        className={`text-lg font-semibold ${selectedBrand.label === item.label
                                             ? "text-blue-600"
                                             : "text-gray-800 group-hover:text-blue-600"
                                             }`}
                                     >
-                                        {name}
+                                        {item.label}
                                     </h3>
                                 </button>
                             ))}
-                    </div>
+                        </div>
+                    ) : (
+                        <p className="text-gray-500 text-sm mt-6">No phone brands found.</p>
+                    )}
                 </div>
             </div>
 
             {/* Phone Models */}
-            {brand && (
-                <div ref={modelsRef} className="container mx-auto py-12">
+            {selectedBrand.models?.length > 0 ? (
+                <div ref={modelsRef} className="container mx-auto py-12 px-2">
                     <div className="max-w-6xl mx-auto text-center">
                         <h2 className="text-3xl sm:text-4xl font-extrabold px-4 tracking-tight text-gray-900 mb-4">
-                            Select Model for {brand.name}
+                            Pick Your {selectedBrand.name} Model
                         </h2>
 
                         {/* Model Search Bar */}
@@ -120,21 +118,31 @@ const RepairBrandPage = () => {
                         </div>
 
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                            {brand.models
-                                .filter((model) =>
-                                    model.toLowerCase().includes(modelSearchTerm.toLowerCase())
-                                )
-                                .map((model) => (
-                                    <Link
-                                        key={model}
-                                        to={`/cart/checkout`}
-                                        className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 p-4 flex flex-col items-center"
-                                    >
-                                        <span className="text-lg font-semibold text-gray-800">{model}</span>
-                                    </Link>
-                                ))}
+                            {selectedBrand.models.map((model: any) => (
+                                <Link
+                                    key={model.id}
+                                    to={`/service/repair/${selectedBrand.id}/${model.id}`}
+                                    className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 p-4 flex flex-col items-center"
+                                >
+                                    <img
+                                        src={model.thumbnail_path || "https://static.vecteezy.com/system/resources/previews/011/911/412/non_2x/smartphone-icon-with-transparent-background-free-png.png"} // fallback if no image
+                                        alt={model.label}
+                                        className="w-24 h-24 object-contain mb-3"
+                                    />
+                                    <span className="text-lg font-semibold text-gray-800">
+                                        {model.label}
+                                    </span>
+                                </Link>
+                            ))}
                         </div>
+
                     </div>
+                </div>
+            ) : (
+                <div ref={modelsRef} className="container mx-auto py-12 px-2 text-center">
+                    <p className="text-muted-foreground">
+                        No models available for this brand.
+                    </p>
                 </div>
             )}
         </>
