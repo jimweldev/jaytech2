@@ -7,4 +7,5 @@ export type ServiceBrand = {
   service_brand_categories?: ServiceBrandCategory[];
   created_at?: string;
   updated_at?: string;
+  records?: ServiceBrand[];
 };

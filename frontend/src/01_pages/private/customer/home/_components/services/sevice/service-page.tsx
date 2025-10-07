@@ -1,6 +1,7 @@
 import type { ServiceBrand } from "@/04_types/service/service-brand";
 import type { ServiceBrandModel } from "@/04_types/service/service-brand-model";
 import useServiceBookedItem from "@/05_stores/service/service-booked-items";
+import { mainInstance } from "@/07_instances/main-instance";
 import ServiceBrandModelItemSelect from "@/components/react-select/service-brand-model-item-select";
 import PageHeader from "@/components/typography/page-header";
 import { Button } from "@/components/ui/button";
@@ -9,12 +10,14 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import useTanstackPaginateQuery from "@/hooks/tanstack/use-tanstack-paginate-query";
+import useTanstackQuery from "@/hooks/tanstack/use-tanstack-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaTimes } from "react-icons/fa";
 import { FaChevronLeft } from "react-icons/fa6";
 import { Link, useNavigate, useParams } from "react-router";
+import { toast } from "sonner";
 import z from "zod";
 
 // Zod schema to validate the form input
@@ -56,15 +59,15 @@ const ServicePage = () => {
     const { brand, model } = useParams();
 
     // get brand record
-    const brandsRecord = useTanstackPaginateQuery<ServiceBrand>({
+    const brandsRecord = useTanstackQuery<ServiceBrand>({
         endpoint: `/services/brands/${brand}`,
-        defaultSort: 'id',
     });
 
+    console.log(brandsRecord)
+
     // get model record
-    const modelRecord = useTanstackPaginateQuery<ServiceBrandModel>({
+    const modelRecord = useTanstackQuery<ServiceBrandModel>({
         endpoint: `/services/brands/models/${model}`,
-        defaultSort: 'id',
     });
 
     // Initialize form with Zod resolver and default values
@@ -97,9 +100,38 @@ const ServicePage = () => {
         });
     };
 
-
     const bookNow = () => {
         setBookedServices(servicesList);
+    }
+
+    const [isLoadingAddToCart, setIsLoadingAddToCart] = useState(false);
+    const addToCart = () => {
+        // logic to add to cart
+        console.log('model ID:', modelRecord.data?.id);
+        console.log(servicesList)
+
+        const formData = new FormData();
+
+        if (modelRecord?.data?.id !== undefined) {
+            formData.append("service_brand_model_id", modelRecord.data.id.toString());
+        } else {
+            toast.error("Missing model ID");
+            return;
+        }
+
+        formData.append("services", JSON.stringify(servicesList));
+
+        toast.promise(mainInstance.post(`/services/carts`, formData), {
+            loading: 'Loading...',
+            success: () => {
+                form.reset();
+                navigate('/cart');
+                return 'Success!';
+            },
+            error: error =>
+                error.response?.data?.message || error.message || 'An error occurred',
+            finally: () => setIsLoadingAddToCart(false),
+        });
     }
 
     return (
@@ -273,7 +305,7 @@ const ServicePage = () => {
                             </div>
 
                             <div className="flex justify-end gap-2 mt-4">
-                                <Button variant="outline" >Add to Cart</Button>
+                                <Button variant="outline" onClick={addToCart} disabled={isLoadingAddToCart}>Add to Cart</Button>
 
                                 <Link to="/cart/checkout">
                                     <Button variant="default" onClick={bookNow}>

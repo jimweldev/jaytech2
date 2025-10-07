@@ -25,7 +25,6 @@ import BagTab from './01_pages/private/customer/bag/bag-tabs/bag-tab';
 import CartPage from './01_pages/private/customer/cart/cart-page';
 import CarBrandPage from './01_pages/private/customer/home/_components/services/car-upgrade/car-brands-page';
 import CheckoutPage from './01_pages/private/customer/home/_components/services/checkout/checkout-page';
-import ViewServicePage from './01_pages/private/customer/home/_components/services/car-upgrade/view-service-page';
 import ComputerBrandPage from './01_pages/private/customer/home/_components/services/computer-upgrade/computer-brands-page';
 import RepairBrandPage from './01_pages/private/customer/home/_components/services/repair/repair-brands-page';
 import CustomerHomePage from './01_pages/private/customer/home/home-page';
@@ -54,6 +53,9 @@ import SettingsLayout from './02_layouts/private/settings-layout';
 import PublicLayout from './02_layouts/public/public-layout';
 import useAuthUserStore from './05_stores/_common/auth-user-store';
 import ServicePage from './01_pages/private/customer/home/_components/services/sevice/service-page';
+import ComputerServicesPage from './01_pages/private/customer/home/_components/services/computer-upgrade/computer-services-page';
+import CarServicesPage from './01_pages/private/customer/home/_components/services/car-upgrade/car-services-page';
+import RepairServicesPage from './01_pages/private/customer/home/_components/services/repair/repair-services-page';
 
 const App = () => {
   const { token, user } = useAuthUserStore();
@@ -75,24 +77,25 @@ const App = () => {
           path: 'service/car-upgrade',
           children: [
             { index: true, element: <CarBrandPage /> },
-            { path: ':brand', element: <CarBrandPage /> },
-            { path: ':brand/:model', element: <ServicePage /> },
+            { path: ':brand', element: <CarServicesPage /> },
+            { path: ':brand/:model', element: <CheckoutPage /> },
           ],
         },
         {
           path: 'service/computer-upgrade',
           children: [
             { index: true, element: <ComputerBrandPage /> },
-            { path: ':brand', element: <CarBrandPage /> },
-            { path: ':brand/:model', element: <ServicePage /> },
+            { path: ':brand', element: <ComputerServicesPage /> },
+            { path: ':brand/:model', element: <CheckoutPage /> },
           ],
         },
         {
           path: 'service/repair',
           children: [
             { index: true, element: <RepairBrandPage /> },
-            { path: ':brand', element: <CarBrandPage /> },
-            { path: ':brand/:model', element: <ServicePage /> },
+            { path: ':brand', element: <RepairBrandPage /> },
+            { path: ':brand/:model', element: <RepairServicesPage /> },
+            { path: ':brand/:model/:service', element: <CheckoutPage /> },
           ],
         },
         {
@@ -234,24 +237,24 @@ const App = () => {
                   path: 'drop-points',
                   element: <DropPointsPage />,
                 },
-                  {
-                    path: 'vouchers',
-                    element: <VouchersPage />,
-                    children: [
-                      {
-                        index: true,
-                        element: <Navigate to="vouchers" replace />,
-                      },
-                      {
-                        path: 'vouchers',
-                        element: <VouchersTab />,
-                      },
-                      {
-                        path: 'claimed-vouchers',
-                        element: <ClaimedVouchersTab />,
-                      },
-                    ],
-                  },
+                {
+                  path: 'vouchers',
+                  element: <VouchersPage />,
+                  children: [
+                    {
+                      index: true,
+                      element: <Navigate to="vouchers" replace />,
+                    },
+                    {
+                      path: 'vouchers',
+                      element: <VouchersTab />,
+                    },
+                    {
+                      path: 'claimed-vouchers',
+                      element: <ClaimedVouchersTab />,
+                    },
+                  ],
+                },
               ],
             },
             // HOME LAYOUT
