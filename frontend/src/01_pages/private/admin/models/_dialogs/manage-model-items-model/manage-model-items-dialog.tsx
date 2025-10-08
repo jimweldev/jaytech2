@@ -55,6 +55,7 @@ const ManageImtesModelDialog = ({
   const columns: DataTableColumn[] = [
     { label: '#', column: 'id', className: 'w-[80px]' },
     { label: 'Brand' },
+    { label: 'Model' },
     { label: 'Service' },
     { label: 'Item' },
     { label: 'Price', column: 'price' },
@@ -102,12 +103,15 @@ const ManageImtesModelDialog = ({
                         }
                       </TableCell>
                       <TableCell>
+                        {modelItem.service_brand_model?.label}
+                      </TableCell>
+                      <TableCell>
                         {
                           modelItem.service_brand_model?.service_brand_category
                             ?.service?.label
                         }
                       </TableCell>
-                      <TableCell>{modelItem.service_item?.label}</TableCell>
+                      <TableCell>{modelItem?.label}</TableCell>
                       <TableCell>€{formatNumber(modelItem.price, 2)}</TableCell>
                       <TableCell>{modelItem.details}</TableCell>
                       <TableCell>

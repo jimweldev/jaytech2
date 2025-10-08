@@ -45,11 +45,11 @@ const AdminLayout = () => {
           url: '/admin/services',
           icon: FaToolbox,
         },
-        {
-          title: 'Items',
-          url: '/admin/items',
-          icon: FaScrewdriverWrench,
-        },
+        // {
+        //   title: 'Items',
+        //   url: '/admin/items',
+        //   icon: FaScrewdriverWrench,
+        // },
         {
           title: 'Brands',
           url: '/admin/brands',
