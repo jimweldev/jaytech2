@@ -12,9 +12,12 @@ return new class extends Migration {
         Schema::create('service_brand_model_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('service_brand_model_id')->constrained('service_brand_models')->onDelete('cascade');
-            $table->foreignId('service_item_id')->constrained('service_items')->onDelete('cascade');
+            $table->string('label');
             $table->decimal('price', 10, 2);
             $table->text('details')->nullable();
+            $table->string('warranty')->nullable();
+            $table->boolean('has_appointment')->default(true);
+            $table->string('form_type')->default('default_form');
             $table->softDeletes();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
