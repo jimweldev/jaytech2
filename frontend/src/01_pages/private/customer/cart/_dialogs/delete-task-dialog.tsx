@@ -36,7 +36,7 @@ const DeleteUserCartDialog = ({
     setIsLoadingDeleteItem(true); // Start loading state
 
     // Send DELETE request and show toast notifications
-    toast.promise(mainInstance.delete(`/user-carts/${selectedUserCart?.id}`), {
+    toast.promise(mainInstance.delete(`/services/carts/${selectedUserCart?.id}`), {
       loading: 'Loading...',
       success: () => {
         refetch();

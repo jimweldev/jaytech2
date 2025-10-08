@@ -8,4 +8,5 @@ export type ServiceItem = {
   service_brand_category?: ServiceBrandCategory;
   created_at?: string;
   updated_at?: string;
+  records?: ServiceItem[];
 };

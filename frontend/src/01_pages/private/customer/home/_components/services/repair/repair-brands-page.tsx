@@ -1,6 +1,6 @@
 import type { ServiceBrand } from "@/04_types/service/service-brand";
 import { Input } from "@/components/ui/input";
-import useTanstackPaginateQuery from "@/hooks/tanstack/use-tanstack-paginate-query";
+import useTanstackQuery from "@/hooks/tanstack/use-tanstack-query";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 
@@ -9,9 +9,8 @@ const RepairBrandPage = () => {
     const modelsRef = useRef<HTMLDivElement | null>(null);
 
     // Tanstack query hook for pagination
-    const brandsPagination = useTanstackPaginateQuery<ServiceBrand>({
+    const brandRecords = useTanstackQuery<ServiceBrand>({
         endpoint: '/services/brands/by-service/repair',
-        defaultSort: 'id',
     });
 
     // scroll to models when brand changes
@@ -62,9 +61,9 @@ const RepairBrandPage = () => {
                     </div>
 
                     {/* Brand List */}
-                    {brandsPagination.data?.records?.length ? (
+                    {brandRecords.data?.records?.length ? (
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                            {brandsPagination.data.records.map((item) => (
+                            {brandRecords.data.records.map((item) => (
                                 <button
                                     key={item.label}
                                     onClick={() => setSelectedBrand(item)}
@@ -137,13 +136,7 @@ const RepairBrandPage = () => {
 
                     </div>
                 </div>
-            ) : (
-                <div ref={modelsRef} className="container mx-auto py-12 px-2 text-center">
-                    <p className="text-muted-foreground">
-                        No models available for this brand.
-                    </p>
-                </div>
-            )}
+            ) : null}
         </>
     )
 }

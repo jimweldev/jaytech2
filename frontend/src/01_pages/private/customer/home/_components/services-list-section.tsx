@@ -12,8 +12,6 @@ const ServiceListSection = () => {
     defaultSort: 'id',
   });
 
-  console.log(tasksPagination.data)
-
   return (
     <>
       {/* Header + Search */}

@@ -21,7 +21,9 @@ use App\Http\Controllers\Service\ServiceClaimedVoucherController;
 use App\Http\Controllers\Service\ServiceVoucherController;
 use App\Http\Controllers\System\SystemGlobalDropdownController;
 use App\Http\Controllers\System\SystemSettingController;
+use App\Http\Controllers\Cart\ServiceCartController;
 use App\Http\Controllers\User\UserImageController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('', function () {
@@ -124,6 +126,9 @@ Route::middleware('auth.middleware')->group(function () {
 
     // service vouchers
     Route::resource('/services/claimed-vouchers', ServiceClaimedVoucherController::class);
+
+    // service carts
+    Route::resource('/services/carts', ServiceCartController::class);
 
     // services
     Route::resource('/services', ServiceController::class);
