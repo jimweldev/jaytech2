@@ -15,7 +15,7 @@ const RepairServicesPage = () => {
     // Tanstack query hook for pagination
     const servicePagination = useTanstackQuery<ServiceBrandModelItem>({
         endpoint: '/services/brands/models/items',
-        params: `service_brand_model_id=${model}&limit=1000`,
+        params: `service_brand_model_id=${model}`,
     });
 
     const [searchTerm, setSearchTerm] = useState("");

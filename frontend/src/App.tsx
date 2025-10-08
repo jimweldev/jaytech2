@@ -78,7 +78,7 @@ const App = () => {
           children: [
             { index: true, element: <CarBrandPage /> },
             { path: ':brand', element: <CarServicesPage /> },
-            { path: ':brand/:model', element: <CheckoutPage /> },
+            { path: ':brand/:service', element: <CheckoutPage /> },
           ],
         },
         {
@@ -86,7 +86,7 @@ const App = () => {
           children: [
             { index: true, element: <ComputerBrandPage /> },
             { path: ':brand', element: <ComputerServicesPage /> },
-            { path: ':brand/:model', element: <CheckoutPage /> },
+            { path: ':brand/:service', element: <CheckoutPage /> },
           ],
         },
         {
