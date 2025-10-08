@@ -16,7 +16,12 @@ class ServiceBookingController extends Controller {
 
         try {
             // Initialize the query builder
-            $query = ServiceBooking::query();
+            $query = ServiceBooking::with([
+                'customer',
+                'service_brand_model.service_brand_category.service_brand',
+                'service_booking_drop_point_technician.technician',
+                'service_booking_drop_point_technician.service_booking_drop_point',
+            ]);
 
             // Define the default query type
             $type = 'paginate';

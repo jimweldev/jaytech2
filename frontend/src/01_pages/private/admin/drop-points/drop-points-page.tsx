@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FaPenToSquare, FaTrash } from 'react-icons/fa6';
+import { FaPenToSquare, FaTrash, FaUser } from 'react-icons/fa6';
 import type { ServiceBookingDropPoint } from '@/04_types/service/service-booking-drop-point';
 import useServiceBookingDropPointStore from '@/05_stores/service/service-booking-drop-point-store';
 import DataTable, {
@@ -104,7 +104,7 @@ const DropPointsPage = () => {
                           </Tooltip>
 
                           {/* Manage technicians */}
-                          <Tooltip content="Update">
+                          <Tooltip content="Assign Technicians">
                             <Button
                               variant="warning"
                               size="icon-xs"
@@ -113,7 +113,7 @@ const DropPointsPage = () => {
                                 setOpenManageDropPointTechniciansDialog(true);
                               }}
                             >
-                              <FaPenToSquare />
+                              <FaUser />
                             </Button>
                           </Tooltip>
 

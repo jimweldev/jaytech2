@@ -1,4 +1,4 @@
-import { FaHouse } from 'react-icons/fa6';
+import { FaCalendar } from 'react-icons/fa6';
 import { Outlet } from 'react-router';
 import { type SidebarGroup } from '@/03_templates/main-template/_components/sidebar/app-sidebar';
 import MainTemplate from '@/03_templates/main-template/main-template';
@@ -9,9 +9,9 @@ const HomeLayout = () => {
       sidebarLabel: 'Pages',
       sidebarItems: [
         {
-          title: 'Home',
+          title: 'Bookings',
           url: '/',
-          icon: FaHouse,
+          icon: FaCalendar,
           end: true,
         },
       ],

@@ -11,15 +11,23 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('service_bookings', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('customer_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('service_brand_model_id')->constrained('service_brand_models')->onDelete('cascade');
-            $table->foreignId('service_booking_drop_point_technician_id')->constrained('service_booking_drop_point_technicians')->onDelete('cascade');
+
+            $table->unsignedBigInteger('service_booking_drop_point_technician_id');
+            $table->foreign('service_booking_drop_point_technician_id', 'sb_dp_tech_fk')
+                ->references('id')
+                ->on('service_booking_drop_point_technicians')
+                ->onDelete('cascade');
+
             $table->text('details')->nullable();
-            $table->string('status')->default('pending');
+            $table->string('status')->default('Pending');
             $table->softDeletes();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
+
     }
 
     /**
